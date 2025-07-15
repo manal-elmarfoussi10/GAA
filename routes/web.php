@@ -9,6 +9,11 @@ use App\Http\Controllers\FactureController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\AvoirController;
 use App\Http\Controllers\FournisseurController;
+use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\PoseurController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\BonDeCommandeController;
+
 
 
 
@@ -61,6 +66,25 @@ Route::get('/avoirs/create', [AvoirController::class, 'create'])->name('avoirs.c
 Route::get('/avoirs/create/from-facture/{facture}', [AvoirController::class, 'createFromFacture'])->name('avoirs.create.fromFacture'); // from facture
 
 Route::resource('fournisseurs', FournisseurController::class);
+
+//produits
+Route::resource('produits', ProduitController::class);
+
+//poseur
+Route::resource('poseurs', PoseurController::class);
+
+//stocks
+// Export routes (should be placed BEFORE the resource route)
+Route::get('/stocks/export/excel', [StockController::class, 'exportExcel'])->name('stocks.export.excel');
+Route::get('/stocks/export/pdf', [StockController::class, 'exportPDF'])->name('stocks.export.pdf');
+
+// Resource route
+Route::resource('stocks', StockController::class);
+
+//bon de commande
+Route::resource('bons-de-commande', BonDeCommandeController::class);
+Route::get('bons-de-commande/export/excel', [BonDeCommandeController::class, 'exportExcel'])->name('bons-de-commande.export.excel');
+Route::get('bons-de-commande/export/pdf', [BonDeCommandeController::class, 'exportPDF'])->name('bons-de-commande.export.pdf');
 
 
 require __DIR__.'/auth.php';
