@@ -12,11 +12,14 @@ class User extends Authenticatable
 
     // Mass assignable
     protected $fillable = [
+        'first_name',
+        'last_name',
         'name',
         'email',
         'password',
         'role',
         'company_id',
+        'is_active',
     ];
 
     // Hidden attributes
@@ -31,6 +34,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 

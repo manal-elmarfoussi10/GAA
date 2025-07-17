@@ -21,29 +21,24 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->merge([
-            'name' => trim($request->first_name . ' ' . $request->last_name),
-        ]);
-
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
-            'name'       => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|string|min:6',
             'role'       => 'required|string',
         ]);
 
-        User::create([
-            'first_name' => $request->first_name,
-            'last_name'  => $request->last_name,
-            'name'       => $request->name,
-            'email'      => $request->email,
-            'password'   => Hash::make($request->password),
-            'role'       => $request->role,
-            'company_id' => auth()->user()->company_id,
-            'is_active'  => $request->has('is_active'),
-        ]);
+        $user = new User();
+        $user->first_name = $validated['first_name'];
+        $user->last_name = $validated['last_name'];
+        $user->name = $validated['first_name'] . ' ' . $validated['last_name'];
+        $user->email = $validated['email'];
+        $user->password = Hash::make($validated['password']);
+        $user->role = $validated['role'];
+        $user->company_id = auth()->user()->company_id;
+        $user->is_active = $request->has('is_active');
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'Utilisateur ajouté avec succès.');
     }
@@ -58,28 +53,26 @@ class UserController extends Controller
     {
         abort_if($user->company_id !== auth()->user()->company_id, 403);
 
-        $request->merge([
-            'name' => trim($request->first_name . ' ' . $request->last_name),
-        ]);
-
-        $request->validate([
+        $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
-            'name'       => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email,' . $user->id,
             'role'       => 'required|string',
             'password'   => 'nullable|string|min:6',
         ]);
 
-        $user->update([
-            'first_name' => $request->first_name,
-            'last_name'  => $request->last_name,
-            'name'       => $request->name,
-            'email'      => $request->email,
-            'role'       => $request->role,
-            'is_active'  => $request->has('is_active'),
-            'password'   => $request->filled('password') ? Hash::make($request->password) : $user->password,
-        ]);
+        $user->first_name = $validated['first_name'];
+        $user->last_name = $validated['last_name'];
+        $user->name = $validated['first_name'] . ' ' . $validated['last_name'];
+        $user->email = $validated['email'];
+        $user->role = $validated['role'];
+        $user->is_active = $request->has('is_active');
+
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour.');
     }

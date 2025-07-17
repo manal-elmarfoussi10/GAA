@@ -19,6 +19,9 @@
     <form action="{{ route('users.store') }}" method="POST" class="space-y-4">
         @csrf
 
+        <!-- L’ID de l’entreprise de l’utilisateur connecté -->
+        <input type="hidden" name="entreprise_id" value="{{ auth()->user()->entreprise_id }}">
+
         <div>
             <label class="block font-medium text-sm text-gray-700">Prénom</label>
             <input type="text" name="first_name" value="{{ old('first_name') }}"
@@ -50,11 +53,11 @@
                 <option value="">-- Sélectionner un rôle --</option>
                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrateur</option>
                 <option value="client_support" {{ old('role') == 'client_support' ? 'selected' : '' }}>Service client</option>
-                <option value="limited_support" {{ old('role') == 'limited_support' ? 'selected' : '' }}>Service client limité</option>
-                <option value="sales" {{ old('role') == 'sales' ? 'selected' : '' }}>Commercial</option>
-                <option value="orders" {{ old('role') == 'orders' ? 'selected' : '' }}>Service Devis, commande et RDV</option>
-                <option value="installer" {{ old('role') == 'installer' ? 'selected' : '' }}>Poseur</option>
-                <option value="accounting" {{ old('role') == 'accounting' ? 'selected' : '' }}>Comptable</option>
+                <option value="limited_client_support" {{ old('role') == 'limited_client_support' ? 'selected' : '' }}>Service client limité</option>
+                <option value="commercial" {{ old('role') == 'commercial' ? 'selected' : '' }}>Commercial</option>
+                <option value="service_devis" {{ old('role') == 'service_devis' ? 'selected' : '' }}>Service Devis, commande et RDV</option>
+                <option value="poseur" {{ old('role') == 'poseur' ? 'selected' : '' }}>Poseur</option>
+                <option value="comptable" {{ old('role') == 'comptable' ? 'selected' : '' }}>Comptable</option>
             </select>
         </div>
 
