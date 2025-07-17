@@ -86,5 +86,10 @@ Route::resource('bons-de-commande', BonDeCommandeController::class);
 Route::get('bons-de-commande/export/excel', [BonDeCommandeController::class, 'exportExcel'])->name('bons-de-commande.export.excel');
 Route::get('bons-de-commande/export/pdf', [BonDeCommandeController::class, 'exportPDF'])->name('bons-de-commande.export.pdf');
 
+//fonctionnalites
+
+Route::get('/fonctionnalites', function () {
+    return view('fonctionnalites.fonctionnalites');
+});
 
 require __DIR__.'/auth.php';
