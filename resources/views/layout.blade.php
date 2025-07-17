@@ -5,6 +5,10 @@
     <title>GG AUTO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Tailwind CSS CDN (or use Laravel Mix) -->
+    <!-- FontAwesome Free -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Font Awesome Pro CDN -->
+<script src="https://kit.fontawesome.com/YOUR_KIT_CODE.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex bg-gray-100 min-h-screen">
@@ -105,5 +109,6 @@
         </main>
 
     </div>
+    @yield('scripts')
 </body>
 </html>

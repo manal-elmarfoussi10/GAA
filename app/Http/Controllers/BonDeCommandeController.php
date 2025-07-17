@@ -52,8 +52,26 @@ class BonDeCommandeController extends Controller
         $bon = BonDeCommande::create($data);
 
         foreach ($request->input('lignes', []) as $ligne) {
+            $produitId = $ligne['produit_id'];
+        
+            if ($produitId === 'autre') {
+                $nomProduit = $ligne['nom_produit'] ?? null;
+        
+                if ($nomProduit) {
+                    $produit = Produit::create([
+                        'nom' => $nomProduit,
+                        'prix' => $ligne['prix'] ?? 0,
+                        // You can add more fields like category, reference, etc.
+                    ]);
+        
+                    $produitId = $produit->id;
+                } else {
+                    continue; // Skip if nom_produit is not defined
+                }
+            }
+        
             $bon->lignes()->create([
-                'produit_id' => $ligne['produit_id'],
+                'produit_id' => $produitId,
                 'quantite' => $ligne['quantite'],
                 'prix_unitaire' => $ligne['prix'] ?? 0,
                 'remise' => $ligne['remise'] ?? 0,
