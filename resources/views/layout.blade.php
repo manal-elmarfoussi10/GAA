@@ -156,6 +156,7 @@
 <script>
     lucide.createIcons();
 </script>
+@yield('scripts')
 
 </body>
 </html>
