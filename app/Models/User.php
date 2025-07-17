@@ -2,44 +2,30 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    // Mass assignable
     protected $fillable = [
         'name',
         'email',
         'password',
         'role',
-        'company_id'
+        'company_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    // Hidden attributes
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // Attribute casting
     protected function casts(): array
     {
         return [
@@ -48,10 +34,44 @@ class User extends Authenticatable
         ];
     }
 
-    // app/Models/User.php
+    // 🔗 Relationship: User belongs to Company
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 
-public function company()
-{
-    return $this->belongsTo(Company::class);
-}
+    // Role constants
+    public const ROLE_ADMIN           = 'admin';
+    public const ROLE_CLIENT_SERVICE  = 'client_service';
+    public const ROLE_CLIENT_LIMITED  = 'client_limited';
+    public const ROLE_COMMERCIAL      = 'commercial';
+    public const ROLE_PLANNER         = 'planner';
+    public const ROLE_INSTALLER       = 'poseur';
+    public const ROLE_ACCOUNTANT      = 'comptable';
+
+    // Role labels for selection/dropdowns
+    public static function roles()
+    {
+        return [
+            self::ROLE_ADMIN           => 'Administrateur',
+            self::ROLE_CLIENT_SERVICE  => 'Service client',
+            self::ROLE_CLIENT_LIMITED  => 'Service client limité',
+            self::ROLE_COMMERCIAL      => 'Commercial',
+            self::ROLE_PLANNER         => 'Service Devis, commande et RDV',
+            self::ROLE_INSTALLER       => 'Poseur',
+            self::ROLE_ACCOUNTANT      => 'Comptable',
+        ];
+    }
+
+    // Role check: single
+    public function isRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
+
+    // Role check: any of many
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->role, $roles);
+    }
 }
