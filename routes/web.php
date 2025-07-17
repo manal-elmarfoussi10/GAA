@@ -93,6 +93,7 @@ Route::resource('bons-de-commande', BonDeCommandeController::class)->parameters(
 Route::get('bons-de-commande/export/excel', [BonDeCommandeController::class, 'exportExcel'])->name('bons-de-commande.export.excel');
 Route::get('bons-de-commande/export/pdf', [BonDeCommandeController::class, 'exportPDF'])->name('bons-de-commande.export.pdf');
 
+<<<<<<< HEAD
 Route::resource('email-templates', EmailTemplateController::class)->only(['index', 'store', 'show']);
 Route::get('/email-templates', [EmailTemplateController::class, 'inbox'])->name('email-templates.inbox');
 
@@ -153,5 +154,12 @@ Route::get('/ma-consommation', function () {
 })->name('consommation.index');
 
 Route::view('/depenses', 'depenses.index')->name('depenses.index');
+=======
+//fonctionnalites
+
+Route::get('/fonctionnalites', function () {
+    return view('fonctionnalites.fonctionnalites');
+});
+>>>>>>> 1cab216e3ba49f1a198089b4d86523dbdc237850
 
 require __DIR__.'/auth.php';
