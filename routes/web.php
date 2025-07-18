@@ -21,6 +21,8 @@ use App\Http\Controllers\SidexaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Middleware\CompanyAccess;
+use App\Http\Controllers\ContactController;
+
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -144,6 +146,11 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
     Route::get('/fonctionnalites', function () {
         return view('fonctionnalites.fonctionnalites');
     });
+
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 });
 
 require __DIR__.'/auth.php';
