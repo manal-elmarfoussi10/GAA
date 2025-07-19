@@ -22,20 +22,23 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Middleware\CompanyAccess;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController;
 
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', CompanyAccess::class])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', CompanyAccess::class])
+    ->name('dashboard');
+
 
 Route::middleware(['auth', CompanyAccess::class])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/user/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/user/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/user/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/clients/create', [ClientController::class, 'create'])->name('clients.create');
     Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
@@ -163,6 +166,10 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
     Route::resource('expenses', ExpenseController::class);
     Route::get('/expenses/export/excel', [ExpenseController::class, 'exportExcel'])->name('expenses.export.excel');
 Route::get('/expenses/export/pdf', [ExpenseController::class, 'exportPDF'])->name('expenses.export.pdf');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 });
 
 require __DIR__.'/auth.php';
