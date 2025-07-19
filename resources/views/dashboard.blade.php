@@ -16,38 +16,11 @@
             --primary: #FF4B00;
             --primary-light: #ff7b40;
             --primary-extra-light: #fff1ec;
-            --dark: #2d3748;
-            --gray-800: #1a202c;
-            --gray-700: #4a5568;
-            --gray-500: #718096;
-            --gray-300: #e2e8f0;
-            --gray-200: #edf2f7;
-            --gray-100: #f7fafc;
-            --white: #ffffff;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             --success: #10b981;
             --warning: #f59e0b;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
-            color: var(--gray-800);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .custom-dashboard-container {
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 0.8s ease forwards;
@@ -60,89 +33,7 @@
             }
         }
 
-        /* Header styles */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--gray-300);
-        }
-
-        .header-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: transform 0.3s ease;
-        }
-
-        .header-title:hover {
-            transform: scale(1.02);
-        }
-
-        .header-title span {
-            color: var(--primary);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 16px;
-        }
-
-        .header-btn {
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-            border: none;
-            outline: none;
-        }
-
-        .primary-btn {
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-        }
-
-        .primary-btn:hover {
-            background: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .secondary-btn {
-            background: transparent;
-            color: var(--gray-700);
-            border: 1px solid var(--gray-300);
-        }
-
-        .secondary-btn:hover {
-            background: var(--gray-100);
-            border-color: var(--gray-500);
-        }
-
-        /* Stats cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
+        .custom-stat-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-left: 4px solid var(--primary);
             position: relative;
@@ -150,12 +41,12 @@
             cursor: pointer;
         }
 
-        .stat-card:hover {
+        .custom-stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        .stat-card::before {
+        .custom-stat-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -168,29 +59,13 @@
             transition: all 0.4s ease;
         }
 
-        .stat-card:hover::before {
+        .custom-stat-card:hover::before {
             width: 100%;
             height: 100%;
-            border-radius: 16px;
+            border-radius: 1rem;
         }
 
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            position: relative;
-        }
-
-        .stat-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--gray-500);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-icon {
+        .custom-stat-icon {
             width: 48px;
             height: 48px;
             background: var(--primary-extra-light);
@@ -204,162 +79,32 @@
             z-index: 1;
         }
 
-        .stat-card:hover .stat-icon {
+        .custom-stat-card:hover .custom-stat-icon {
             transform: scale(1.1);
             background: var(--primary);
             color: white;
         }
 
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover .stat-value {
+        .custom-stat-card:hover .stat-value {
             color: var(--primary);
         }
 
-        .stat-subtitle {
-            font-size: 14px;
-            color: var(--gray-500);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover .stat-subtitle {
-            color: var(--gray-700);
-        }
-
-        .trend-up {
-            color: var(--success);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 14px;
-        }
-
-        .trend-down {
-            color: var(--warning);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 14px;
-        }
-
-        /* Charts section */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 24px;
-            margin-bottom: 30px;
-        }
-
-        .chart-card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease;
-        }
-
-        .chart-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        .chart-container {
-            height: 300px;
-            position: relative;
-        }
-
-        /* Table section */
-        .table-card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
-        }
-
-        .table-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: left;
-            padding: 16px 20px;
-            font-weight: 600;
-            color: var(--gray-700);
-            text-transform: uppercase;
-            font-size: 13px;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--gray-300);
-            position: sticky;
-            top: 0;
-            background: white;
-        }
-
-        td {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--gray-200);
-            color: var(--gray-700);
-            transition: all 0.2s ease;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: var(--gray-100);
-            transform: scale(1.01);
-        }
-
-        .progress-bar {
+        .custom-progress-bar {
             height: 6px;
-            background: var(--gray-200);
+            background: #e2e8f0;
             border-radius: 3px;
             overflow: hidden;
             margin-top: 8px;
         }
 
-        .progress-fill {
+        .custom-progress-fill {
             height: 100%;
             border-radius: 3px;
             background: var(--primary);
             transition: width 1s ease;
         }
 
-        .insurance-icon {
+        .custom-insurance-icon {
             width: 32px;
             height: 32px;
             background: var(--primary-extra-light);
@@ -371,13 +116,12 @@
             transition: all 0.3s ease;
         }
 
-        tr:hover .insurance-icon {
+        tr:hover .custom-insurance-icon {
             background: var(--primary);
             color: white;
         }
 
-        /* Loading spinner */
-        .loading-spinner {
+        .custom-loading-spinner {
             display: none;
             position: fixed;
             top: 0;
@@ -390,7 +134,7 @@
             align-items: center;
         }
 
-        .spinner {
+        .custom-spinner {
             width: 50px;
             height: 50px;
             border: 5px solid var(--primary-extra-light);
@@ -403,105 +147,87 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-
-            .header-actions {
-                width: 100%;
-                justify-content: flex-start;
-            }
-        }
     </style>
 </head>
-<body>
-    <div class="loading-spinner" id="loadingSpinner">
-        <div class="spinner"></div>
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen p-6">
+    <div class="custom-loading-spinner" id="loadingSpinner">
+        <div class="custom-spinner"></div>
     </div>
 
-    <div class="dashboard-container">
+    <div class="container mx-auto px-4 py-6 custom-dashboard-container">
         <!-- Header -->
-        <div class="header">
-            <h1 class="header-title">
+        <div class="flex justify-between items-center py-5 mb-6 border-b border-gray-300">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3 transition-transform hover:scale-102">
                 <i class="fas fa-chart-line"></i>
-                Tableau de <span>Bord</span>
+                Tableau de <span class="text-orange-500">Bord</span>
             </h1>
-            <div class="header-actions">
-                <button class="header-btn secondary-btn" id="exportBtn">
+            <div class="flex gap-4">
+                <button class="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-500 transition-all shadow-sm" id="exportBtn">
                     <i class="fas fa-download"></i> Exporter PDF
                 </button>
-                <button class="header-btn primary-btn" id="refreshBtn">
+                <button class="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold bg-orange-500 text-white hover:bg-orange-600 hover:-translate-y-0.5 transition-all shadow-sm hover:shadow-md" id="refreshBtn">
                     <i class="fas fa-sync-alt"></i> Actualiser
                 </button>
             </div>
         </div>
 
         <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="custom-stat-card bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-center mb-4 relative">
                     <div>
-                        <div class="stat-title">CA Annuel (HT)</div>
-                        <div class="stat-value" id="annualRevenue">{{ number_format($totalHT, 0, ',', ' ') }} €</div>
-                        <div class="trend-up">
+                        <div class="text-sm font-semibold text-gray-500 uppercase">CA Annuel (HT)</div>
+                        <div class="text-2xl font-bold text-gray-800" id="annualRevenue">{{ number_format($totalHT, 0, ',', ' ') }} €</div>
+                        <div class="text-green-500 font-semibold text-sm flex items-center gap-1">
                             <i class="fas fa-arrow-up"></i> <span id="revenueTrend">12.5%</span> vs année précédente
                         </div>
                     </div>
-                    <div class="stat-icon">
+                    <div class="custom-stat-icon">
                         <i class="fas fa-euro-sign"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
+            <div class="custom-stat-card bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-center mb-4 relative">
                     <div>
-                        <div class="stat-title">Marge (TTC)</div>
-                        <div class="stat-value" id="marginValue">{{ number_format($marge, 0, ',', ' ') }} €</div>
-                        <div class="trend-up">
+                        <div class="text-sm font-semibold text-gray-500 uppercase">Marge (TTC)</div>
+                        <div class="text-2xl font-bold text-gray-800" id="marginValue">{{ number_format($marge, 0, ',', ' ') }} €</div>
+                        <div class="text-green-500 font-semibold text-sm flex items-center gap-1">
                             <i class="fas fa-arrow-up"></i> <span id="marginTrend">8.2%</span> vs année précédente
                         </div>
                     </div>
-                    <div class="stat-icon">
+                    <div class="custom-stat-icon">
                         <i class="fas fa-chart-pie"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
+            <div class="custom-stat-card bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-center mb-4 relative">
                     <div>
-                        <div class="stat-title">Dépenses</div>
-                        <div class="stat-value" id="expensesValue">{{ number_format($depenses, 0, ',', ' ') }} €</div>
-                        <div class="stat-subtitle">
+                        <div class="text-sm font-semibold text-gray-500 uppercase">Dépenses</div>
+                        <div class="text-2xl font-bold text-gray-800" id="expensesValue">{{ number_format($depenses, 0, ',', ' ') }} €</div>
+                        <div class="text-gray-500 text-sm">
                             <i class="fas fa-info-circle"></i> Contrôlé dans le budget
                         </div>
                     </div>
-                    <div class="stat-icon">
+                    <div class="custom-stat-icon">
                         <i class="fas fa-wallet"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
+            <div class="custom-stat-card bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-center mb-4 relative">
                     <div>
-                        <div class="stat-title">Dossiers actifs</div>
-                        <div class="stat-value" id="activeFiles">{{ $dossiersActifs }}</div>
-                        <div class="trend-up">
+                        <div class="text-sm font-semibold text-gray-500 uppercase">Dossiers actifs</div>
+                        <div class="text-2xl font-bold text-gray-800" id="activeFiles">{{ $dossiersActifs }}</div>
+                        <div class="text-green-500 font-semibold text-sm flex items-center gap-1">
                             <i class="fas fa-arrow-up"></i> <span id="newFiles">{{ $nouveauxDossiers }}</span> nouveaux ce mois-ci
                         </div>
                     </div>
-                    <div class="stat-icon">
+                    <div class="custom-stat-icon">
                         <i class="fas fa-folder-open"></i>
                     </div>
                 </div>
@@ -509,54 +235,54 @@
         </div>
 
         <!-- Charts Section -->
-        <div class="charts-grid">
-            <div class="chart-card">
-                <div class="card-header">
-                    <h2 class="card-title">Chiffre d'affaire (HT)</h2>
-                    <div class="header-actions">
-                        <button class="secondary-btn" style="padding: 6px 12px;" id="caYearBtn">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-xl p-6 shadow-md transition-transform hover:-translate-y-1">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-lg font-bold text-gray-800">Chiffre d'affaire (HT)</h2>
+                    <div>
+                        <button class="flex items-center gap-1 px-3 py-1.5 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors">
                             <i class="fas fa-calendar"></i> <span id="currentYear">{{ now()->year }}</span>
                         </button>
                     </div>
                 </div>
-                <div class="chart-container">
+                <div class="h-80 relative">
                     <canvas id="chartCa"></canvas>
                 </div>
             </div>
 
-            <div class="chart-card">
-                <div class="card-header">
-                    <h2 class="card-title">Nombre de dossiers</h2>
-                    <div class="header-actions">
-                        <button class="secondary-btn" style="padding: 6px 12px;" id="filterBtn">
+            <div class="bg-white rounded-xl p-6 shadow-md transition-transform hover:-translate-y-1">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-lg font-bold text-gray-800">Nombre de dossiers</h2>
+                    <div>
+                        <button class="flex items-center gap-1 px-3 py-1.5 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors">
                             <i class="fas fa-filter"></i> Tous
                         </button>
                     </div>
                 </div>
-                <div class="chart-container">
+                <div class="h-80 relative">
                     <canvas id="chartDossiers"></canvas>
                 </div>
             </div>
         </div>
 
         <!-- Table Section -->
-        <div class="table-card">
-            <div class="card-header">
-                <h2 class="card-title">Statistiques par Assurance</h2>
-                <button class="secondary-btn" style="padding: 6px 12px;" id="exportTableBtn">
+        <div class="bg-white rounded-xl p-6 shadow-md transition-transform hover:-translate-y-1 mb-8">
+            <div class="flex justify-between items-center mb-5">
+                <h2 class="text-lg font-bold text-gray-800">Statistiques par Assurance</h2>
+                <button class="flex items-center gap-1 px-3 py-1.5 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors" id="exportTableBtn">
                     <i class="fas fa-download"></i> Exporter Excel
                 </button>
             </div>
 
             <div class="overflow-x-auto">
-                <table id="insuranceTable">
+                <table class="w-full border-collapse">
                     <thead>
                         <tr>
-                            <th>Assurance</th>
-                            <th>Part €</th>
-                            <th>Part %</th>
-                            <th>Panier moyen</th>
-                            <th>Évolution</th>
+                            <th class="text-left px-5 py-4 font-semibold text-gray-700 uppercase text-xs tracking-wider border-b border-gray-300 bg-white sticky top-0">Assurance</th>
+                            <th class="text-left px-5 py-4 font-semibold text-gray-700 uppercase text-xs tracking-wider border-b border-gray-300 bg-white sticky top-0">Part €</th>
+                            <th class="text-left px-5 py-4 font-semibold text-gray-700 uppercase text-xs tracking-wider border-b border-gray-300 bg-white sticky top-0">Part %</th>
+                            <th class="text-left px-5 py-4 font-semibold text-gray-700 uppercase text-xs tracking-wider border-b border-gray-300 bg-white sticky top-0">Panier moyen</th>
+                            <th class="text-left px-5 py-4 font-semibold text-gray-700 uppercase text-xs tracking-wider border-b border-gray-300 bg-white sticky top-0">Évolution</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -565,10 +291,10 @@
                         @endphp
 
                         @foreach($statsParAssurance as $assurance)
-                        <tr>
-                            <td>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div class="insurance-icon">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-5 py-4 border-b border-gray-200 text-gray-700">
+                                <div class="flex items-center gap-3">
+                                    <div class="custom-insurance-icon">
                                         @switch($assurance->nom_assurance)
                                             @case('MACIF') <i class="fas fa-building"></i> @break
                                             @case('MATMUT') <i class="fas fa-shield-alt"></i> @break
@@ -581,18 +307,18 @@
                                     {{ $assurance->nom_assurance }}
                                 </div>
                             </td>
-                            <td>{{ number_format($assurance->part_euro ?? 0, 0, ',', ' ') }} €</td>
-                            <td>
+                            <td class="px-5 py-4 border-b border-gray-200 text-gray-700">{{ number_format($assurance->part_euro ?? 0, 0, ',', ' ') }} €</td>
+                            <td class="px-5 py-4 border-b border-gray-200 text-gray-700">
                                 @php
                                     $partPercentage = $totalPartEuro > 0 ? ($assurance->part_euro / $totalPartEuro) * 100 : 0;
                                 @endphp
                                 <div>{{ number_format($partPercentage, 1) }}%</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: {{ $partPercentage }}%"></div>
+                                <div class="custom-progress-bar">
+                                    <div class="custom-progress-fill" style="width: {{ $partPercentage }}%"></div>
                                 </div>
                             </td>
-                            <td>{{ number_format($assurance->panier_moyen ?? 0, 0, ',', ' ') }} €</td>
-                            <td class="trend-up">+{{ number_format(rand(5, 15)/10, 1) }}%</td>
+                            <td class="px-5 py-4 border-b border-gray-200 text-gray-700">{{ number_format($assurance->panier_moyen ?? 0, 0, ',', ' ') }} €</td>
+                            <td class="px-5 py-4 border-b border-gray-200 text-green-500 font-semibold">+{{ number_format(rand(5, 15)/10, 1) }}%</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -609,7 +335,7 @@
 
             setTimeout(() => {
                 // Utilisation de html2canvas pour capturer le dashboard
-                html2canvas(document.querySelector('.dashboard-container')).then(canvas => {
+                html2canvas(document.querySelector('.container')).then(canvas => {
                     const imgData = canvas.toDataURL('image/png');
                     const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
                     const imgProps = pdf.getImageProperties(imgData);
@@ -676,7 +402,7 @@
             }).format(value);
         }
 
-        // Initialisation des graphiques avec les données Laravel
+
         document.addEventListener('DOMContentLoaded', function() {
             // CA Chart
             const caCtx = document.getElementById('chartCa').getContext('2d');
@@ -783,8 +509,8 @@
                 }
             });
 
-            // Animation des barres de progression
-            document.querySelectorAll('.progress-fill').forEach(bar => {
+            
+            document.querySelectorAll('.custom-progress-fill').forEach(bar => {
                 const width = bar.style.width;
                 bar.style.width = '0%';
                 setTimeout(() => {
@@ -806,9 +532,9 @@
             // Gestionnaire d'événements pour le bouton Exporter PDF
             document.getElementById('exportBtn').addEventListener('click', function() {
                 // Animation de confirmation
-                this.classList.add('primary-btn');
+                this.classList.add('bg-orange-500', 'text-white', 'border-transparent');
                 setTimeout(() => {
-                    this.classList.remove('primary-btn');
+                    this.classList.remove('bg-orange-500', 'text-white', 'border-transparent');
                 }, 2000);
 
                 exportToPDF();
@@ -817,9 +543,9 @@
             // Gestionnaire d'événements pour le bouton Exporter Excel
             document.getElementById('exportTableBtn').addEventListener('click', function() {
                 // Animation de confirmation
-                this.classList.add('primary-btn');
+                this.classList.add('bg-orange-500', 'text-white', 'border-transparent');
                 setTimeout(() => {
-                    this.classList.remove('primary-btn');
+                    this.classList.remove('bg-orange-500', 'text-white', 'border-transparent');
                 }, 2000);
 
                 exportTableToExcel();
