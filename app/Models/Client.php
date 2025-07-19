@@ -14,10 +14,41 @@ class Client extends Model
         'raison', 'type_vitrage', 'professionnel', 'reparation',
         'photo_vitrage', 'photo_carte_verte', 'photo_carte_grise',
         'type_cadeau', 'numero_sinistre', 'kilometrage', 'connu_par',
-        'adresse_pose', 'reference_interne', 'reference_client', 'precision',
+        'adresse_pose', 'reference_interne', 'reference_client', 'precision', 'statut'
     ];
     public function rdvs()
 {
     return $this->hasMany(Rdv::class);
+}
+
+public function factures()
+{
+    return $this->hasMany(Facture::class);
+}
+
+public function avoirs()
+{
+    return $this->hasManyThrough(
+        \App\Models\Avoir::class,
+        \App\Models\Facture::class,
+        'client_id',    // Foreign key on factures table
+        'facture_id',   // Foreign key on avoirs table
+        'id',           // Local key on clients table
+        'id'            // Local key on factures table
+    );
+}
+
+public function devis()
+{
+    return $this->hasMany(Devis::class);
+}
+public function photos()
+{
+    return $this->hasMany(Photo::class);
+}
+
+public function expenses()
+{
+    return $this->hasMany(Expense::class);
 }
 }

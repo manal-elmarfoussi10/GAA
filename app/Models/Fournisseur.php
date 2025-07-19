@@ -22,4 +22,9 @@ class Fournisseur extends Model
         'contact_email',
         'contact_telephone'
     ];
+
+    public function expenses()
+{
+    return $this->hasMany(Expense::class);
+}
 }

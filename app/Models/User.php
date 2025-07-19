@@ -52,6 +52,8 @@ class User extends Authenticatable
     public const ROLE_PLANNER         = 'planner';
     public const ROLE_INSTALLER       = 'poseur';
     public const ROLE_ACCOUNTANT      = 'comptable';
+    public const ROLE_SUPERADMIN = 'superadmin';
+
 
     // Role labels for selection/dropdowns
     public static function roles()
@@ -64,6 +66,7 @@ class User extends Authenticatable
             self::ROLE_PLANNER         => 'Service Devis, commande et RDV',
             self::ROLE_INSTALLER       => 'Poseur',
             self::ROLE_ACCOUNTANT      => 'Comptable',
+            self::ROLE_SUPERADMIN      => 'Super Administrateur',
         ];
     }
 

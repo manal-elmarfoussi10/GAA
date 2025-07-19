@@ -1,5 +1,5 @@
 <div class="p-6 border-b border-gray-200 flex justify-center">
-    <img src="{{ asset('images/GA GESTION LOGO.png') }}" alt="GG AUTO Logo" class="h-16" />
+    <img src="{{ asset('images/GA GESTION LOGO.png') }}" alt="GG AUTO Logo" class="h-12" />
 </div>
 
 <nav class="flex-1 overflow-y-auto text-sm text-gray-700">
