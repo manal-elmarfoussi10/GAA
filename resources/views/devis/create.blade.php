@@ -228,7 +228,7 @@
                 const defaultName = produit ? produit.name : '';
                 const defaultDesc = produit ? produit.description : '';
                 const defaultPrice = produit ? produit.price : '0';
-                const defaultTva = produit ? produit.tva : '20'; // Default 20% VAT
+                const defaultTva = produit ? produit.tva : '20.00';  // Default 20% VAT
                 
                 newRow.innerHTML = `
                     <td class="px-4 py-3">

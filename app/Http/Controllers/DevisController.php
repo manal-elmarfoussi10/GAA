@@ -46,6 +46,7 @@ class DevisController extends Controller
         $devis = Devis::create($request->only([
             'client_id', 'titre', 'date_devis', 'date_validite'
         ]));
+    
 
         $totalHT = 0;
         $totalTVA = 0;
@@ -72,7 +73,6 @@ class DevisController extends Controller
 
         $devis->update([
             'total_ht' => $totalHT,
-            'tva' => null, // Not used anymore
             'total_tva' => $totalTVA,
             'total_ttc' => $totalHT + $totalTVA,
         ]);
@@ -81,11 +81,12 @@ class DevisController extends Controller
     }
 
     public function edit($id)
-    {
-        $devis = Devis::with('items')->findOrFail($id);
-        $clients = Client::all();
-        return view('devis.edit', compact('devis', 'clients'));
-    }
+{
+    $devis = Devis::with('items')->findOrFail($id);
+    $clients = Client::all();
+    $produits = Produit::all(); // Add this line
+    return view('devis.edit', compact('devis', 'clients', 'produits')); // Add 'produits' here
+}
 
     public function update(Request $request, $id)
     {
@@ -151,12 +152,37 @@ class DevisController extends Controller
         return Excel::download(new DevisExport, 'devis.xlsx');
     }
 
-    public function exportPDF()
-    {
-        $devis = Devis::with('client')->get();
-        $pdf = PDF::loadView('devis.export_pdf', compact('devis'));
-        return $pdf->download('devis.pdf');
+   // In your DevisController
+public function exportPDF()
+{
+    $devis = Devis::with('client')->get();
+    
+    // Get the company for the authenticated user
+    $company = auth()->user()->company;
+    
+    // Handle company logo
+    $logoBase64 = null;
+    if ($company->logo) {
+        try {
+            $logoPath = storage_path('app/' . $company->logo);
+            if (file_exists($logoPath)) {
+                $logoData = file_get_contents($logoPath);
+                $logoBase64 = 'data:'.mime_content_type($logoPath).';base64,'.base64_encode($logoData);
+            }
+        } catch (\Exception $e) {
+            // Log error if needed
+            \Log::error('Error loading company logo: '.$e->getMessage());
+        }
     }
+    
+    $pdf = PDF::loadView('devis.export_pdf', [
+        'devis' => $devis,
+        'company' => $company,
+        'logoBase64' => $logoBase64
+    ]);
+    
+    return $pdf->download('devis.pdf');
+}
     
     public function generateFacture(Devis $devis)
     {
@@ -187,7 +213,28 @@ class DevisController extends Controller
     public function downloadSinglePdf($id)
     {
         $devis = Devis::with(['client', 'items'])->findOrFail($id);
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('devis.single-pdf', compact('devis'));
+        $company = auth()->user()->company;
+        
+        // Handle company logo
+        $logoBase64 = null;
+        if ($company->logo) {
+            try {
+                $logoPath = storage_path('app/' . $company->logo);
+                if (file_exists($logoPath)) {
+                    $logoData = file_get_contents($logoPath);
+                    $logoBase64 = 'data:'.mime_content_type($logoPath).';base64,'.base64_encode($logoData);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error loading company logo: '.$e->getMessage());
+            }
+        }
+        
+        $pdf = PDF::loadView('devis.single-pdf', [
+            'devis' => $devis,
+            'company' => $company,
+            'logoBase64' => $logoBase64
+        ]);
+        
         return $pdf->download("devis_{$devis->id}.pdf");
     }
 }

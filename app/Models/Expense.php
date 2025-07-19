@@ -12,7 +12,13 @@ class Expense extends Model
         'fournisseur_id',
         'paid_status',
         'ht_amount',
-        'ttc_amount'
+        'ttc_amount',
+        'description' // Add this
+    ];
+    
+    // Add this casting
+    protected $casts = [
+        'date' => 'date'
     ];
 
     public function client()

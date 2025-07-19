@@ -45,7 +45,16 @@
                 @foreach($facture->items as $index => $item)
                 <tr class="border-t">
                     <td class="px-4 py-2">
-                        <input type="text" name="items[{{ $index }}][produit]" value="{{ $item->produit }}" class="w-full border border-gray-300 rounded px-2 py-1">
+                        <!-- Changed from text input to product dropdown -->
+                        <select name="items[{{ $index }}][produit]" class="w-full border border-gray-300 rounded px-2 py-1">
+                            <option value="">Sélectionner un produit</option>
+                            @foreach($produits as $produit)
+                                <option value="{{ $produit->nom }}" 
+                                    {{ $item->produit == $produit->nom ? 'selected' : '' }}>
+                                    {{ $produit->nom }}
+                                </option>
+                            @endforeach
+                        </select>
                     </td>
                     <td class="px-4 py-2">
                         <input type="number" name="items[{{ $index }}][quantite]" value="{{ $item->quantite }}" class="w-full border border-gray-300 rounded px-2 py-1">

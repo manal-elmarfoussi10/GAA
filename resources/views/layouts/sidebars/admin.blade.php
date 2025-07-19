@@ -47,7 +47,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('depenses.index', ['facture' => 1]) }}"
+            <a href="{{ route('expenses.index', ['facture' => 1]) }}"
                class="flex items-center gap-3 px-3 py-2 rounded {{ request()->routeIs('paiement.*') || request()->routeIs('paiements.*') ? 'bg-[#FF4B00] text-white font-semibold' : 'hover:bg-orange-100 text-gray-700' }}">
                 <i data-lucide="credit-card" class="w-4 h-4"></i> Dépenses / achats
             </a>

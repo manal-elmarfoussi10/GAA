@@ -13,6 +13,7 @@ class Avoir extends Model
         return $this->belongsTo(Facture::class);
     }
   
+    
 public function paiements()
 {
     return $this->hasMany(Paiement::class);

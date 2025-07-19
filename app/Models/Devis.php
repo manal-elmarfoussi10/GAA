@@ -1,5 +1,6 @@
 <?php
 
+// app/Models/Devis.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,15 +10,15 @@ class Devis extends Model
 {
     use HasFactory;
 
-protected $fillable = [
-    'produit',
-    'description', // Add this
-    'quantite',
-    'prix_unitaire',
-    'taux_tva', // Add this
-    'remise',
-    'total_ht'
-];
+    protected $fillable = [
+        'client_id', 
+        'titre', 
+        'date_devis', 
+        'date_validite',
+        'total_ht',
+        'total_tva',
+        'total_ttc'
+    ];
 
     public function client()
     {

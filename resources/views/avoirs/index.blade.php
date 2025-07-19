@@ -67,12 +67,7 @@
                                 <span>TTC</span>
                             </label>
                         </li>
-                        <li>
-                            <label class="flex items-center gap-2 text-sm cursor-pointer text-gray-700">
-                                <input type="checkbox" class="column-toggle-avoir rounded text-orange-500" data-column="col-paye" checked>
-                                <span>Paiement encaissé</span>
-                            </label>
-                        </li>
+                     
                         <li>
                             <label class="flex items-center gap-2 text-sm cursor-pointer text-gray-700">
                                 <input type="checkbox" class="column-toggle-avoir rounded text-orange-500" data-column="col-facture" checked>
@@ -125,7 +120,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-avoir">Avoir</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-ht">HT</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-ttc">TTC</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-paye">Paiement encaissé</th>
+                       
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-facture">Facture associé</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-annee">Année fiscale</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-rdv">Date de RDV</th>
@@ -135,7 +130,9 @@
                     @foreach ($avoirs as $avoir)
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 col-date">{{ $avoir->created_at->format('d/m/Y') }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 col-dossier">{{ $avoir->facture->client->nom_assure ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 col-dossier">
+                            {{ $avoir->facture->client->nom_assure ?? '-' }}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-orange-600 space-y-1 col-actions">
                             <a href="{{ route('avoirs.edit', $avoir->id) }}">Modifier</a><br>
                             <form action="{{ route('avoirs.destroy', $avoir->id) }}" method="POST" onsubmit="return confirm('Confirmer la suppression ?')">
@@ -146,13 +143,21 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm col-avoir">
                             <a href="#" class="bg-teal-100 text-teal-700 px-2 py-1 rounded">Télécharger</a>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm col-ht">{{ number_format($avoir->montant ?? 0, 2) }} €</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm col-ttc">{{ number_format($avoir->montant ?? 0, 2) }} €</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm col-paye">-</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm col-facture">{{ $avoir->facture->numero ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm col-ht">{{ number_format($avoir->montant, 2) }} €</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm col-ttc">{{ number_format($avoir->montant, 2) }} €</td>
+                       
+                        <td class="px-6 py-4 whitespace-nowrap text-sm col-facture">
+                            @if($avoir->facture)
+                                <a href="{{ route('factures.show', $avoir->facture->id) }}" class="text-blue-600 hover:underline">
+                                    {{ $avoir->facture->numero ?? 'Facture #' . $avoir->facture->id }}
+                                </a>
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm col-annee">{{ $avoir->created_at->year }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm col-rdv">
-                            {{ optional($avoir->facture->client->rdvs->first())->start_time ?? '-' }}
+                            {{ optional(optional($avoir->facture)->client->rdvs->first())->start_time ?? '-' }}
                         </td>
                     </tr>
                     @endforeach

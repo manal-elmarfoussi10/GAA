@@ -24,6 +24,7 @@ use App\Http\Middleware\CompanyAccess;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExpensesController;
 
 
 Route::get('/', function () {
@@ -68,8 +69,11 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
     Route::get('/devis/{id}/pdf', [DevisController::class, 'downloadSinglePdf'])->name('devis.download.pdf');
 
     Route::resource('factures', FactureController::class);
-    Route::get('/factures/export/excel', [FactureController::class, 'exportExcel'])->name('factures.export.excel');
-    Route::get('/factures/export/pdf', [FactureController::class, 'exportPDF'])->name('factures.export.pdf');
+    Route::get('/factures/export/excel', [FactureController::class, 'exportExcel'])
+    ->name('factures.export.excel');
+
+Route::get('/factures/export/pdf', [FactureController::class, 'exportFacturesPDF'])
+    ->name('factures.export.pdf');
     Route::get('/factures/{id}/pdf', [FactureController::class, 'downloadPdf'])->name('factures.download.pdf');
     Route::post('/factures/{id}/acquitter', [FactureController::class, 'acquitter'])->name('factures.acquitter');
     Route::get('/factures/{facture}/acquitter', [FactureController::class, 'acquitter'])->name('factures.acquitter');
@@ -126,6 +130,7 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
     Route::post('/emails/{id}/restore', [EmailController::class, 'restore'])->name('emails.restore');
     Route::post('/emails/{email}/reply', [EmailController::class, 'reply'])->name('emails.reply');
     Route::delete('/emails/{email}', [EmailController::class, 'destroy'])->name('emails.destroy');
+    Route::post('/emails/upload', [EmailController::class, 'upload'])->name('emails.upload');
 
     Route::get('/profile', [CompanyController::class, 'show'])->name('company.profile');
     Route::get('/profile/edit', [CompanyController::class, 'edit'])->name('company.edit');
@@ -164,8 +169,20 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
     Route::view('/comptable', 'comptable.dashboard')->name('comptable.dashboard');
 
     Route::resource('expenses', ExpenseController::class);
-    Route::get('/expenses/export/excel', [ExpenseController::class, 'exportExcel'])->name('expenses.export.excel');
-Route::get('/expenses/export/pdf', [ExpenseController::class, 'exportPDF'])->name('expenses.export.pdf');
+    Route::get('/expenses/export/excel', [ExpenseController::class, 'exportExcel'])
+    ->name('expenses.export.excel');
+
+Route::get('/expenses/export/pdf', [ExpenseController::class, 'exportPDF'])
+    ->name('expenses.export.pdf');
+// Remplacer :
+Route::get('/export-pdf', [FactureController::class, 'exportPDF']);
+
+// Par :
+Route::get('/export-pdf', [FactureController::class, 'exportFacturesPDF']);
+Route::get('/expenses/{expense}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
+Route::put('/expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
+Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');

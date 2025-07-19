@@ -22,12 +22,11 @@ class BonDeCommandeController extends Controller
     }
 
     public function create()
-
     {
-        $clients = Client::all();
+        $clients = Client::all(); // Make sure to import Client model
         $fournisseurs = Fournisseur::all();
-        $produits = Produit::all();
-
+        $produits = Produit::all(); // Assuming you have a Produit model
+        
         return view('bons-de-commande.create', compact('clients', 'fournisseurs', 'produits'));
     }
 

@@ -8,19 +8,24 @@ use Illuminate\Http\Request;
 class PoseurController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->input('search');
-        $poseurs = Poseur::query()
-            ->when($search, function ($query, $search) {
-                return $query->where('nom', 'like', "%{$search}%")
-                             ->orWhere('email', 'like', "%{$search}%")
-                             ->orWhere('telephone', 'like', "%{$search}%");
-            })
-            ->orderBy('nom')
-            ->get();
+{
+    $search = $request->input('search');
+    
+    // Get counts for stats cards
+    $totalPoseurs = Poseur::count();
+    $activePoseurs = Poseur::where('actif', true)->count();
+    
+    $poseurs = Poseur::query()
+        ->when($search, function ($query, $search) {
+            return $query->where('nom', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%")
+                         ->orWhere('telephone', 'like', "%{$search}%");
+        })
+        ->orderBy('nom')
+        ->paginate(10); // Paginate with 10 items per page
 
-        return view('poseurs.index', compact('poseurs', 'search'));
-    }
+    return view('poseurs.index', compact('poseurs', 'search', 'totalPoseurs', 'activePoseurs'));
+}
 
     public function create()
     {

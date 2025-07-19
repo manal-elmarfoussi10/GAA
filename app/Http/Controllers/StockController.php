@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\StocksExport;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class StockController extends Controller
 {
@@ -22,7 +24,8 @@ class StockController extends Controller
             $query->where('statut', $request->statut);
         }
 
-        $stocks = $query->orderByDesc('date')->get();
+        // Add pagination
+        $stocks = $query->orderByDesc('date')->paginate(10);
 
         return view('stocks.index', compact('stocks'));
     }

@@ -13,26 +13,33 @@ class EmailController extends Controller
         $emails = Email::where('folder', 'inbox')
             ->where('is_deleted', false)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(15); // Changed to paginate
 
         return view('emails.inbox', compact('emails'));
     }
 
     public function sent()
     {
-        $emails = Email::where('folder', 'sent')->latest()->get();
+        $emails = Email::where('folder', 'sent')
+            ->latest()
+            ->paginate(15); // Changed to paginate
+
         return view('emails.sent', compact('emails'));
     }
 
     public function important()
     {
-        $emails = Email::where('tag', 'important')->get();
+        $emails = Email::where('tag', 'important')
+            ->paginate(15); // Changed to paginate
+
         return view('emails.important', compact('emails'));
     }
 
     public function bin()
     {
-        $emails = Email::where('is_deleted', true)->get();
+        $emails = Email::where('is_deleted', true)
+            ->paginate(15); // Changed to paginate
+
         return view('emails.bin', compact('emails'));
     }
 
@@ -103,84 +110,115 @@ class EmailController extends Controller
     }
 
     public function markImportant($id)
-{
-    $email = Email::findOrFail($id);
-    $email->tag = 'important';
-    $email->tag_color = '#facc15'; // yellow
-    $email->save();
-
-    return redirect()->back()->with('success', 'Email marqué comme important.');
-}
-public function toggleImportant($id)
-{
-    $email = Email::findOrFail($id);
-
-    if ($email->tag === 'important') {
-        $email->tag = null;
-        $email->tag_color = null;
-    } else {
+    {
+        $email = Email::findOrFail($id);
         $email->tag = 'important';
-        $email->tag_color = '#facc15'; // Yellow
+        $email->tag_color = '#facc15'; // yellow
+        $email->save();
+
+        return redirect()->back()->with('success', 'Email marqué comme important.');
     }
 
-    $email->save();
+    public function toggleImportant($id)
+    {
+        $email = Email::findOrFail($id);
 
-    return redirect()->back()->with('success', 'Email mis à jour.');
-}
+        if ($email->tag === 'important') {
+            $email->tag = null;
+            $email->tag_color = null;
+        } else {
+            $email->tag = 'important';
+            $email->tag_color = '#facc15'; // Yellow
+        }
 
-public function moveToTrash($id)
-{
-    $email = Email::findOrFail($id);
-    $email->is_deleted = true;
-    $email->tag = 'bin';
-    $email->label_color = '#ef4444'; // red
-    $email->save();
+        $email->save();
 
-    return redirect()->back()->with('success', 'Email moved to trash.');
-}
-
-public function reply(Request $request, $id)
-{
-    $email = Email::findOrFail($id);
-
-    $request->validate([
-        'content' => 'required|string',
-        'file' => 'nullable|file|max:2048',
-    ]);
-
-    $reply = new Reply([
-        'email_id' => $email->id,
-        'content' => $request->content,
-        'file_path' => null,
-        'file_name' => null,
-    ]);
-
-    // Handle file upload if present
-    if ($request->hasFile('file')) {
-        $path = $request->file('file')->store('attachments', 'public');
-        $reply->file_path = $path;
-        $reply->file_name = $request->file('file')->getClientOriginalName();
+        return redirect()->back()->with('success', 'Email mis à jour.');
     }
 
-    $reply->save();
+    public function moveToTrash($id)
+    {
+        $email = Email::findOrFail($id);
+        $email->is_deleted = true;
+        $email->tag = 'bin';
+        $email->label_color = '#ef4444'; // red
+        $email->save();
 
-    return redirect()->route('emails.show', $email->id)->with('success', 'Réponse envoyée.');
-}
+        return redirect()->back()->with('success', 'Email moved to trash.');
+    }
 
-public function notifications()
-{
-    $emails = Email::where('folder', 'inbox')
-                   ->where('is_read', false) // ← only unread ones
+    public function reply(Request $request, $id)
+    {
+        $email = Email::findOrFail($id);
+
+        $request->validate([
+            'content' => 'required|string',
+            'file' => 'nullable|file|max:2048',
+        ]);
+
+        $reply = new Reply([
+            'email_id' => $email->id,
+            'content' => $request->content,
+            'file_path' => null,
+            'file_name' => null,
+        ]);
+
+        // Handle file upload if present
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('attachments', 'public');
+            $reply->file_path = $path;
+            $reply->file_name = $request->file('file')->getClientOriginalName();
+        }
+
+        $reply->save();
+
+        return redirect()->route('emails.show', $email->id)->with('success', 'Réponse envoyée.');
+    }
+
+    public function notifications()
+    {
+        $emails = Email::where('folder', 'inbox')
+                   ->where('is_read', false)
                    ->latest()
-                   ->get();
+                   ->paginate(12); // Paginate with 12 items per page
 
-    return view('emails.notifications', compact('emails'));
-}
-public function markAllRead()
+        $readCount = Email::where('folder', 'inbox')->where('is_read', true)->count();
+        $unreadCount = Email::where('folder', 'inbox')->where('is_read', false)->count();
+
+        return view('emails.notifications', compact('emails', 'readCount', 'unreadCount'));
+    }
+
+    public function markAllRead()
+    {
+        Email::where('folder', 'inbox')->update(['is_read' => true]);
+
+        return redirect()->back()->with('success', 'Toutes les notifications ont été marquées comme lues.');
+    }
+
+    public function upload(Request $request)
 {
-    Email::where('folder', 'inbox')->update(['is_read' => true]);
+    if ($request->hasFile('upload')) {
+        $originName = $request->file('upload')->getClientOriginalName();
+        $fileName = pathinfo($originName, PATHINFO_FILENAME);
+        $extension = $request->file('upload')->getClientOriginalExtension();
+        $fileName = $fileName . '_' . time() . '.' . $extension;
 
-    return redirect()->back()->with('success', 'Toutes les notifications ont été marquées comme lues.');
+        $request->file('upload')->move(public_path('uploads'), $fileName);
+
+        $url = asset('uploads/' . $fileName);
+
+        return response()->json([
+            'uploaded' => 1,
+            'fileName' => $fileName,
+            'url' => $url
+        ]);
+    }
+
+    return response()->json([
+        'uploaded' => 0,
+        'error' => [
+            'message' => 'Upload failed.'
+        ]
+    ], 400);
 }
-
 }

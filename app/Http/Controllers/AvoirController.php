@@ -16,10 +16,8 @@ class AvoirController extends Controller
     public function index()
     {
         $avoirs = Avoir::with([
-            'facture', 
-            'facture.client', 
             'facture.client.rdvs',
-            'paiements' // Add this line
+            'paiements'  // Make sure this relationship exists
         ])->latest()->get();
         
         return view('avoirs.index', compact('avoirs'));
