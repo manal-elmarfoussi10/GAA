@@ -5,26 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Devis;
 use App\Models\DevisItem;
 use App\Models\Client;
+use App\Models\Produit;
 use Illuminate\Http\Request;
 use App\Exports\DevisExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Facture;
 use App\Models\FactureItem;
-use Barryvdh\DomPDF\Facade\Pdf as DomPDF;
 
 class DevisController extends Controller
 {
     public function index()
     {
-        $devis = Devis::with(['client.rdvs'])->latest()->get();
-    return view('devis.index', compact('devis'));
+        $devis = Devis::paginate(10);
+        return view('devis.index', compact('devis'));
     }
 
     public function create()
     {
         $clients = Client::all();
-        return view('devis.create', compact('clients'));
+        $produits = Produit::all();
+        return view('devis.create', compact('clients', 'produits'));
     }
 
     public function store(Request $request)
@@ -35,8 +36,10 @@ class DevisController extends Controller
             'date_devis' => 'required|date',
             'date_validite' => 'required|date',
             'items.*.produit' => 'required|string',
+            'items.*.description' => 'nullable|string',
             'items.*.quantite' => 'required|integer|min:1',
-            'items.*.prix_unitaire' => 'required|numeric',
+            'items.*.prix_unitaire' => 'required|numeric', // Fixed field name
+            'items.*.taux_tva' => 'required|numeric',     // Added TVA rate
             'items.*.remise' => 'nullable|numeric|min:0|max:100',
         ]);
 
@@ -45,15 +48,23 @@ class DevisController extends Controller
         ]));
 
         $totalHT = 0;
+        $totalTVA = 0;
 
         foreach ($request->items as $item) {
+            // Calculate line total with discount
             $lineTotal = $item['prix_unitaire'] * $item['quantite'] * (1 - ($item['remise'] ?? 0) / 100);
             $totalHT += $lineTotal;
+            
+            // Calculate TVA for this line
+            $tvaAmount = $lineTotal * ($item['taux_tva'] ?? 0) / 100;
+            $totalTVA += $tvaAmount;
 
             $devis->items()->create([
                 'produit' => $item['produit'],
+                'description' => $item['description'] ?? '',
                 'quantite' => $item['quantite'],
-                'prix_unitaire' => $item['prix_unitaire'],
+                'prix_unitaire' => $item['prix_unitaire'], // Fixed field name
+                'taux_tva' => $item['taux_tva'] ?? 0,     // Store TVA rate
                 'remise' => $item['remise'] ?? 0,
                 'total_ht' => $lineTotal,
             ]);
@@ -61,9 +72,9 @@ class DevisController extends Controller
 
         $devis->update([
             'total_ht' => $totalHT,
-            'tva' => 20,
-            'total_tva' => $totalHT * 0.2,
-            'total_ttc' => $totalHT * 1.2,
+            'tva' => null, // Not used anymore
+            'total_tva' => $totalTVA,
+            'total_ttc' => $totalHT + $totalTVA,
         ]);
 
         return redirect()->route('devis.index')->with('success', 'Devis créé.');
@@ -80,20 +91,39 @@ class DevisController extends Controller
     {
         $devis = Devis::findOrFail($id);
 
+        $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'titre' => 'nullable|string',
+            'date_devis' => 'required|date',
+            'date_validite' => 'required|date',
+            'items.*.produit' => 'required|string',
+            'items.*.description' => 'nullable|string',
+            'items.*.quantite' => 'required|integer|min:1',
+            'items.*.prix_unitaire' => 'required|numeric',
+            'items.*.taux_tva' => 'required|numeric',
+            'items.*.remise' => 'nullable|numeric|min:0|max:100',
+        ]);
+
         $devis->update($request->only(['client_id', 'titre', 'date_devis', 'date_validite']));
 
         $devis->items()->delete();
 
         $totalHT = 0;
+        $totalTVA = 0;
 
         foreach ($request->items as $item) {
             $lineTotal = $item['prix_unitaire'] * $item['quantite'] * (1 - ($item['remise'] ?? 0) / 100);
             $totalHT += $lineTotal;
+            
+            $tvaAmount = $lineTotal * ($item['taux_tva'] ?? 0) / 100;
+            $totalTVA += $tvaAmount;
 
             $devis->items()->create([
                 'produit' => $item['produit'],
+                'description' => $item['description'] ?? '',
                 'quantite' => $item['quantite'],
                 'prix_unitaire' => $item['prix_unitaire'],
+                'taux_tva' => $item['taux_tva'] ?? 0,
                 'remise' => $item['remise'] ?? 0,
                 'total_ht' => $lineTotal,
             ]);
@@ -101,8 +131,8 @@ class DevisController extends Controller
 
         $devis->update([
             'total_ht' => $totalHT,
-            'total_tva' => $totalHT * 0.2,
-            'total_ttc' => $totalHT * 1.2,
+            'total_tva' => $totalTVA,
+            'total_ttc' => $totalHT + $totalTVA,
         ]);
 
         return redirect()->route('devis.index')->with('success', 'Devis mis à jour.');
@@ -117,47 +147,47 @@ class DevisController extends Controller
     }
 
     public function exportExcel()
-{
-    return Excel::download(new DevisExport, 'devis.xlsx');
-}
-
-public function exportPDF()
-{
-    $devis = Devis::with('client')->get();
-    $pdf = PDF::loadView('devis.export_pdf', compact('devis'));
-    return $pdf->download('devis.pdf');
-}
-public function generateFacture(Devis $devis)
-{
-    // Create facture from devis
-    $facture = Facture::create([
-        'client_id' => $devis->client_id,
-        'devis_id' => $devis->id,
-        'date_facture' => $devis->date_devis,
-        'total_ht' => $devis->total_ht,
-        'total_ttc' => $devis->total_ttc,
-        'tva' => $devis->tva,
-    ]);
-
-    // Copy items
-    foreach ($devis->items as $item) {
-        $facture->items()->create([
-            'produit' => $item->produit,
-            'quantite' => $item->quantite,
-            'prix_unitaire' => $item->prix_unitaire,
-            'remise' => $item->remise,
-            'total_ht' => $item->total_ht,
-        ]);
+    {
+        return Excel::download(new DevisExport, 'devis.xlsx');
     }
 
-    return redirect()->route('factures.index')->with('success', 'Facture générée depuis le devis.');
-}
-public function downloadSinglePdf($id)
-{
-    $devis = Devis::with(['client', 'items'])->findOrFail($id);
+    public function exportPDF()
+    {
+        $devis = Devis::with('client')->get();
+        $pdf = PDF::loadView('devis.export_pdf', compact('devis'));
+        return $pdf->download('devis.pdf');
+    }
+    
+    public function generateFacture(Devis $devis)
+    {
+        $facture = Facture::create([
+            'client_id' => $devis->client_id,
+            'devis_id' => $devis->id,
+            'date_facture' => $devis->date_devis,
+            'total_ht' => $devis->total_ht,
+            'total_ttc' => $devis->total_ttc,
+            'total_tva' => $devis->total_tva,
+        ]);
 
-    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('devis.single-pdf', compact('devis'));
+        foreach ($devis->items as $item) {
+            $facture->items()->create([
+                'produit' => $item->produit,
+                'description' => $item->description,
+                'quantite' => $item->quantite,
+                'prix_unitaire' => $item->prix_unitaire,
+                'taux_tva' => $item->taux_tva,
+                'remise' => $item->remise,
+                'total_ht' => $item->total_ht,
+            ]);
+        }
 
-    return $pdf->download("devis_{$devis->id}.pdf");
-}
+        return redirect()->route('factures.index')->with('success', 'Facture générée depuis le devis.');
+    }
+    
+    public function downloadSinglePdf($id)
+    {
+        $devis = Devis::with(['client', 'items'])->findOrFail($id);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('devis.single-pdf', compact('devis'));
+        return $pdf->download("devis_{$devis->id}.pdf");
+    }
 }

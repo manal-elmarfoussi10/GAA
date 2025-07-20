@@ -15,7 +15,13 @@ class AvoirController extends Controller
     // Display list of avoirs
     public function index()
     {
-        $avoirs = Avoir::with(['facture', 'facture.client', 'facture.client.rdvs'])->latest()->get();
+        $avoirs = Avoir::with([
+            'facture', 
+            'facture.client', 
+            'facture.client.rdvs',
+            'paiements' // Add this line
+        ])->latest()->get();
+        
         return view('avoirs.index', compact('avoirs'));
     }
 

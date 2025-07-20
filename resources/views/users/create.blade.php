@@ -50,14 +50,15 @@
             <label class="block font-medium text-sm text-gray-700">Rôle</label>
             <select name="role"
                     class="w-full border-gray-300 rounded shadow-sm focus:ring-orange-500 focus:border-orange-500 @error('role') border-red-500 @enderror" required>
-                <option value="">-- Sélectionner un rôle --</option>
-                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrateur</option>
-                <option value="client_support" {{ old('role') == 'client_support' ? 'selected' : '' }}>Service client</option>
-                <option value="limited_client_support" {{ old('role') == 'limited_client_support' ? 'selected' : '' }}>Service client limité</option>
-                <option value="commercial" {{ old('role') == 'commercial' ? 'selected' : '' }}>Commercial</option>
-                <option value="service_devis" {{ old('role') == 'service_devis' ? 'selected' : '' }}>Service Devis, commande et RDV</option>
-                <option value="poseur" {{ old('role') == 'poseur' ? 'selected' : '' }}>Poseur</option>
-                <option value="comptable" {{ old('role') == 'comptable' ? 'selected' : '' }}>Comptable</option>
+                    <option value="">-- Sélectionner un rôle --</option>
+                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrateur</option>
+                    <option value="client_service" {{ old('role') == 'client_service' ? 'selected' : '' }}>Service client</option>
+                    <option value="limited_client_support" {{ old('role') == 'limited_client_support' ? 'selected' : '' }}>Service client limité</option>
+                    <option value="commercial" {{ old('role') == 'commercial' ? 'selected' : '' }}>Commercial</option>
+                    <option value="planner" {{ old('role') == 'planner' ? 'selected' : '' }}>Service Devis, commande et RDV</option>
+                    <option value="poseur" {{ old('role') == 'poseur' ? 'selected' : '' }}>Poseur</option>
+                    <option value="comptable" {{ old('role') == 'comptable' ? 'selected' : '' }}>Comptable</option>
+                </select>
             </select>
         </div>
 

@@ -9,10 +9,15 @@ class Devis extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'client_id', 'titre', 'date_devis', 'date_validite',
-        'total_ht', 'tva', 'total_tva', 'total_ttc'
-    ];
+protected $fillable = [
+    'produit',
+    'description', // Add this
+    'quantite',
+    'prix_unitaire',
+    'taux_tva', // Add this
+    'remise',
+    'total_ht'
+];
 
     public function client()
     {

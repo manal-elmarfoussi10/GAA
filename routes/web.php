@@ -21,6 +21,7 @@ use App\Http\Controllers\SidexaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Middleware\CompanyAccess;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 
@@ -42,12 +43,22 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
     Route::get('/clients/create', [ClientController::class, 'create'])->name('clients.create');
     Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/clients/{client}', [ClientController::class, 'show'])->name('clients.show');
+    Route::post('/clients/{client}/statut-interne', [ClientController::class, 'updateStatutInterne'])->name('clients.statut_interne');
+    Route::get('/clients/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
+    Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
+    Route::delete('/clients/{client}', [ClientController::class, 'destroy'])
+    ->name('clients.destroy');
+    Route::get('/clients/{client}/export-pdf', [ClientController::class, 'exportPdf'])->name('clients.export.pdf');
 
     Route::get('/calendar', [RdvController::class, 'calendar'])->name('rdv.calendar');
     Route::get('/calendar/events', [RdvController::class, 'events'])->name('rdv.events');
 
-    Route::resource('rdv', RdvController::class);
-    Route::put('/rdv/{id}', [RdvController::class, 'update'])->name('rdv.update');
+    Route::get('/rdv/calendar', [RdvController::class, 'calendar'])->name('rdv.calendar');
+    Route::get('/rdv/events', [RdvController::class, 'events'])->name('rdv.events');
+    Route::post('/rdv', [RdvController::class, 'store'])->name('rdv.store');
+    Route::put('/rdv/{rdv}', [RdvController::class, 'update'])->name('rdv.update');
+    Route::delete('/rdv/{rdv}', [RdvController::class, 'destroy'])->name('rdv.destroy');
 
     Route::resource('devis', DevisController::class);
     Route::get('/devis/export/excel', [DevisController::class, 'exportExcel'])->name('devis.export.excel');
@@ -149,6 +160,12 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
         return view('fonctionnalites.fonctionnalites');
     });
 
+    Route::view('/commercial', 'commercial.dashboard')->name('commercial.dashboard');
+    Route::view('/comptable', 'comptable.dashboard')->name('comptable.dashboard');
+
+    Route::resource('expenses', ExpenseController::class);
+    Route::get('/expenses/export/excel', [ExpenseController::class, 'exportExcel'])->name('expenses.export.excel');
+Route::get('/expenses/export/pdf', [ExpenseController::class, 'exportPDF'])->name('expenses.export.pdf');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
