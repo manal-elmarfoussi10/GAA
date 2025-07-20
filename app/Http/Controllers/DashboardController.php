@@ -15,10 +15,10 @@ class DashboardController extends Controller
         // Total HT
         $totalHT = Facture::sum('total_ht');
 
-        // Marge (exemple arbitraire)
+        // Marge
         $marge = 25000;
 
-        // Dépenses (exemple arbitraire)
+        // Dépenses 
         $depenses = 18500;
 
         // Dossiers actifs (clients)
