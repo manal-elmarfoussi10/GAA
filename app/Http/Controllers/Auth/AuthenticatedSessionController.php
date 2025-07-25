@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,37 +23,44 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Validation des champs
         $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
-    
+
+        // Tentative de connexion
         if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+            return back()
+                ->withInput($request->only('email'))
+                ->with('error', 'E-mail ou mot de passe incorrect.');
         }
-    
+
+        // Connexion réussie → régénération de la session
         $request->session()->regenerate();
-    
+
         $user = Auth::user();
-    
-        // 🎯 Role-based redirection logic
+
+        // Redirection selon le rôle
         switch ($user->role) {
             case 'admin':
-                return redirect()->route('dashboard'); // admin dashboard
+            case 'superadmin':
+                return redirect()->route('dashboard'); // tableau de bord admin
+
             case 'planner':
             case 'poseur':
                 return redirect()->route('rdv.calendar'); // calendrier
+
             case 'comptable':
-                return redirect()->route('comptable.dashboard'); // custom dashboard
+                return redirect()->route('comptable.dashboard'); // dashboard comptable
+
             case 'commercial':
-                return redirect()->route('commercial.dashboard'); // custom dashboard
+                return redirect()->route('commercial.dashboard'); // dashboard commercial
+
             case 'client_service':
             case 'client_limited':
-                return redirect()->route('emails.inbox');
-            case 'superadmin':
-                return redirect()->route('dashboard'); // email inbox
+                return redirect()->route('emails.inbox'); // boîte mail
+
             default:
                 return redirect()->route('dashboard'); // fallback
         }
@@ -68,7 +74,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

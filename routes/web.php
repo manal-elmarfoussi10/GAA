@@ -25,6 +25,7 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpensesController;
+use App\Http\Controllers\AccountController;
 
 
 Route::get('/', function () {
@@ -187,6 +188,18 @@ Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->nam
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/mon-compte', [AccountController::class, 'show'])->name('mon-compte');
+    Route::post('/mon-compte', [AccountController::class, 'update'])->name('mon-compte.update');
+    Route::post('/mon-compte/mot-de-passe', [AccountController::class, 'updatePassword'])->name('mon-compte.password');
+    Route::delete('/mon-compte/supprimer', [AccountController::class, 'destroy'])->name('mon-compte.delete');
+    Route::post('/mon-compte/supprimer-photo', [AccountController::class, 'deletePhoto'])->name('mon-compte.photo.delete');
+
+});
+
+
 });
 
 require __DIR__.'/auth.php';

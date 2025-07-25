@@ -79,18 +79,30 @@
                 NB UNITÉS : {{ session('unit_count', '0.00') }}
             </a>
 
-
+            <!-- Notifications -->
             <button class="ml-2 focus:outline-none focus:ring-2 focus:ring-[#FF4B00] rounded-full">
                 <i data-lucide="bell" class="w-5 h-5 text-[#FF4B00]"></i>
             </button>
 
+            <!-- Avatar + nom avec lien vers mon compte -->
+            @php
+                $user = auth()->user();
+            @endphp
 
-            <div class="flex items-center gap-2 ml-2">
-                <div class="h-8 w-8 bg-[#FF4B00] text-white rounded-full flex items-center justify-center font-bold uppercase">
-                    {{ strtoupper(auth()->user()->name[0] ?? 'U') }}
-                </div>
-                <span class="text-[#FF4B00] font-medium truncate max-w-[120px]">{{ auth()->user()->name ?? 'Utilisateur' }}</span>
-            </div>
+            <a href="{{ route('mon-compte') }}" class="flex items-center gap-2 ml-2 hover:opacity-80 transition">
+                @if ($user && $user->photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->photo))
+                    <img src="{{ asset('storage/' . $user->photo) }}"
+                         alt="Photo de profil"
+                         class="h-8 w-8 rounded-full object-cover border-2 border-[#FF4B00] shadow" />
+                @else
+                    <div class="h-8 w-8 bg-[#FF4B00] text-white rounded-full flex items-center justify-center font-bold uppercase">
+                        {{ strtoupper($user->name[0] ?? 'U') }}
+                    </div>
+                @endif
+                <span class="text-[#FF4B00] font-medium truncate max-w-[120px]">
+                    {{ $user->name ?? 'Utilisateur' }}
+                </span>
+            </a>
         </div>
     </nav>
 
@@ -99,7 +111,6 @@
         @yield('content')
     </main>
 </div>
-
 
 <script>
     lucide.createIcons();

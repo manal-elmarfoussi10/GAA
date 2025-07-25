@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Liste des Factures</title>
+    <title>Facture #{{ $facture->numero }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
-        body { 
-            font-family: 'Arial', sans-serif; 
+        body {
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 25px;
             color: #333;
@@ -112,21 +112,21 @@
                 <img src="{{ $logoBase64 }}" alt="Logo" class="logo">
             @endif
         </div>
-        
+
         <div class="company-info">
             <div class="company-name">{{ $company->name }}</div>
             <div>{{ $company->address }}</div>
             <div>Téléphone: {{ $company->phone }}</div>
             <div>Email: {{ $company->email }}</div>
         </div>
-        
+
         <div class="report-info">
             <div>Date d'édition: {{ now()->format('d/m/Y H:i') }}</div>
-            <div>Total factures: {{ $factures->count() }}</div>
+            <div>Facture #{{ $facture->numero }}</div>
         </div>
     </div>
 
-    <div class="report-title">LISTE DES FACTURES</div>
+    <div class="report-title">FACTURE CLIENT</div>
 
     <table>
         <thead>
@@ -140,18 +140,6 @@
             </tr>
         </thead>
         <tbody>
-            @php
-                $globalTotalHT = 0;
-                $globalTotalTVA = 0;
-                $globalTotalTTC = 0;
-            @endphp
-            
-            @foreach($factures as $facture)
-            @php
-                $globalTotalHT += $facture->total_ht;
-                $globalTotalTVA += $facture->total_tva;
-                $globalTotalTTC += $facture->total_ttc;
-            @endphp
             <tr>
                 <td>{{ $facture->numero }}</td>
                 <td class="client-cell">{{ $facture->client->nom ?? 'N/A' }}</td>
@@ -160,14 +148,13 @@
                 <td class="text-right">{{ number_format($facture->total_tva, 2, ',', ' ') }} €</td>
                 <td class="text-right">{{ number_format($facture->total_ttc, 2, ',', ' ') }} €</td>
             </tr>
-            @endforeach
         </tbody>
     </table>
 
     <div class="summary">
-        <span class="summary-item">Total HT: <span class="highlight">{{ number_format($globalTotalHT, 2, ',', ' ') }} €</span></span>
-        <span class="summary-item">Total TVA: <span class="highlight">{{ number_format($globalTotalTVA, 2, ',', ' ') }} €</span></span>
-        <span class="summary-item">Total TTC: <span class="highlight">{{ number_format($globalTotalTTC, 2, ',', ' ') }} €</span></span>
+        <span class="summary-item">Total HT: <span class="highlight">{{ number_format($facture->total_ht, 2, ',', ' ') }} €</span></span>
+        <span class="summary-item">Total TVA: <span class="highlight">{{ number_format($facture->total_tva, 2, ',', ' ') }} €</span></span>
+        <span class="summary-item">Total TTC: <span class="highlight">{{ number_format($facture->total_ttc, 2, ',', ' ') }} €</span></span>
     </div>
 
     <div class="footer">
