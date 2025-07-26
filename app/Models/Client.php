@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Rdv;
+use App\Models\company;
+
 
 class Client extends Model
 {
@@ -50,5 +52,18 @@ public function photos()
 public function expenses()
 {
     return $this->hasMany(Expense::class);
+}
+public function bondecommandes()
+{
+    return $this->hasMany(BonDeCommande::class);
+}
+public function conversations()
+{
+    return $this->hasMany(Email::class, 'client_id');
+}
+
+public function company()
+{
+    return $this->belongsTo(Company::class);
 }
 }

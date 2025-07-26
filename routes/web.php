@@ -26,6 +26,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ConversationController;
 
 
 Route::get('/', function () {
@@ -154,6 +155,12 @@ Route::get('/factures/export/pdf', [FactureController::class, 'exportFacturesPDF
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
     });
 
+    Route::get('/clients/{client}/conversation', [ConversationController::class, 'showThread'])
+     ->name('clients.conversation');
+
+Route::post('/clients/{client}/conversation', [ConversationController::class, 'sendMessage'])
+     ->name('conversations.send');
+     
     Route::get('/acheter-unites', [UnitController::class, 'showPurchaseForm'])->name('units.form');
     Route::post('/acheter-unites', [UnitController::class, 'purchase'])->name('units.purchase');
 
@@ -189,6 +196,15 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.index
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
+// Conversation routes
+Route::post('/clients/{client}/conversations', [ConversationController::class, 'store'])
+     ->name('conversations.store');
+
+Route::post('/conversations/{conversation}/replies', [ConversationController::class, 'reply'])
+     ->name('conversations.reply');
+
+Route::get('/replies/{reply}/download', [ConversationController::class, 'download'])
+     ->name('conversations.download');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/mon-compte', [AccountController::class, 'show'])->name('mon-compte');
@@ -198,6 +214,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mon-compte/supprimer-photo', [AccountController::class, 'deletePhoto'])->name('mon-compte.photo.delete');
 
 });
+
 
 
 });

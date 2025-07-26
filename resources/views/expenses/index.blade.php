@@ -49,12 +49,7 @@
                                 <span>Fournisseur</span>
                             </label>
                         </li>
-                        <li>
-                            <label class="flex items-center gap-2 text-sm cursor-pointer text-gray-700">
-                                <input type="checkbox" class="column-toggle rounded text-orange-500" data-column="col-paye" checked>
-                                <span>Payé ?</span>
-                            </label>
-                        </li>
+                     
                         <li>
                             <label class="flex items-center gap-2 text-sm cursor-pointer text-gray-700">
                                 <input type="checkbox" class="column-toggle rounded text-orange-500" data-column="col-ht" checked>
@@ -129,7 +124,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-date">Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-dossier">Dossier</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-fournisseur">Fournisseur</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-paye">Payé ?</th>
+                       
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-ht">HT</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-ttc">TTC</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-actions">Actions</th>
@@ -149,36 +144,10 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap col-fournisseur">
                             <div class="flex items-center gap-2">
-                                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-8 h-8"></div>
                                 <span class="text-sm font-medium">{{ $expense->fournisseur->nom_societe }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap col-paye">
-                            @if($expense->paid_status == 'paid')
-                            <span class="inline-flex items-center gap-1 bg-teal-100 px-3 py-1 rounded-full text-xs font-medium text-teal-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                                OUI
-                            </span>
-                            <div class="text-xs text-teal-600 mt-1">Ajout le : {{ $expense->created_at->format('d/m/Y') }}</div>
-                            @elseif($expense->paid_status == 'pending')
-                            <span class="inline-flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full text-xs font-medium text-yellow-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-7-4a1 1 0 01-2 0v-2a1 1 0 012 0v2zm4-2a1 1 0 11-2 0v-6a1 1 0 012 0v6zm4-6a1 1 0 10-2 0v6a1 1 0 102 0V6zm4 8a1 1 0 100-2h-2a1 1 0 100 2h2z" clip-rule="evenodd" />
-                                </svg>
-                                En attente
-                            </span>
-                            @else
-                            <span class="inline-flex items-center gap-1 bg-red-100 px-3 py-1 rounded-full text-xs font-medium text-red-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                                </svg>
-                                Non
-                            </span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 col-ht">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 col-ht">
                             {{ number_format($expense->ht_amount, 2, ',', ' ') }}€
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 col-ttc">

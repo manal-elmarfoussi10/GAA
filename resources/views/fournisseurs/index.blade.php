@@ -30,7 +30,6 @@
                         <th class="px-8 py-5 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Nom</th>
                         <th class="px-8 py-5 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Téléphone</th>
                         <th class="px-8 py-5 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Catégorie</th>
-                        <th class="px-8 py-5 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Total HT</th>
                         <th class="px-8 py-5 text-right text-sm font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
@@ -39,7 +38,6 @@
                     <tr class="hover:bg-orange-50 transition-colors duration-150">
                         <td class="px-8 py-5 text-sm font-medium text-gray-900">
                             <div class="flex items-center">
-                                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10 mr-4"></div>
                                 {{ $fournisseur->nom_societe }}
                             </div>
                         </td>
@@ -55,9 +53,6 @@
                             <span class="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
                                 {{ $fournisseur->categorie }}
                             </span>
-                        </td>
-                        <td class="px-8 py-5 text-sm font-semibold text-gray-700">
-                            {{ number_format($fournisseur->total_ht ?? 0, 2) }} €
                         </td>
                         <td class="px-8 py-5 text-sm text-right space-x-3">
                             <a href="{{ route('fournisseurs.edit', $fournisseur->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">

@@ -373,6 +373,8 @@
         @endif
     </div>
 </div>
+
+
     <!-- Timeline Section -->
     <div class="bg-white rounded-xl shadow-md p-6">
         <h2 class="text-lg font-semibold text-gray-800 mb-4">Historique du dossier</h2>

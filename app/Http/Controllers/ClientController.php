@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Email; // Add this for conversations
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage; 
 
@@ -44,8 +45,14 @@ class ClientController extends Controller
             'factures.avoirs',
             'devis',
             'photos',
+            'conversations' => function($query) {
+                $query->with(['replies' => function($q) {
+                    // Change to use 'email_id' in the relationship
+                    $q->with('sender')->orderBy('created_at', 'asc');
+                }])->orderBy('created_at', 'desc');
+            }
         ])->findOrFail($id);
-
+    
         return view('clients.show', compact('client'));
     }
 
@@ -53,8 +60,6 @@ class ClientController extends Controller
     {
         return view('clients.edit', compact('client'));
     }
-
-  
 
     public function update(Request $request, Client $client)
     {
@@ -74,7 +79,6 @@ class ClientController extends Controller
             ->with('success', 'Dossier mis à jour avec succès');
     }
     
-
     protected function handleImageUpdates(Request $request, Client $client, array &$data)
     {
         $imageFields = [
@@ -182,31 +186,31 @@ class ClientController extends Controller
     }
 
     public function destroy(Client $client)
-{
-    try {
-        // Supprimer les relations d'abord (si nécessaire)
-        $client->factures()->delete();
-        $client->devis()->delete();
+    {
+        try {
+            // Supprimer les relations d'abord (si nécessaire)
+            $client->factures()->delete();
+            $client->devis()->delete();
 
-        // Puis supprimer le client
-        $client->delete();
+            // Puis supprimer le client
+            $client->delete();
 
-        return redirect()->route('clients.index')
-            ->with('success', 'Client supprimé avec succès');
-    } catch (\Exception $e) {
-        return redirect()->route('clients.index')
-            ->with('error', 'Erreur lors de la suppression du client: '.$e->getMessage());
+            return redirect()->route('clients.index')
+                ->with('success', 'Client supprimé avec succès');
+        } catch (\Exception $e) {
+            return redirect()->route('clients.index')
+                ->with('error', 'Erreur lors de la suppression du client: '.$e->getMessage());
+        }
     }
-}
 
-public function exportPdf(Client $client)
-{
-    $client->load(['factures', 'avoirs', 'devis', 'photos']);
+    public function exportPdf(Client $client)
+    {
+        $client->load(['factures', 'avoirs', 'devis', 'photos']);
 
-    $pdf = Pdf::loadView('clients.pdf', compact('client'));
+        $pdf = Pdf::loadView('clients.pdf', compact('client'));
 
-    $filename = 'client_' . $client->id . '_'. now()->format('Ymd_His') . '.pdf';
+        $filename = 'client_' . $client->id . '_'. now()->format('Ymd_His') . '.pdf';
 
-    return $pdf->download($filename);
-}
+        return $pdf->download($filename);
+    }
 }

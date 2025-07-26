@@ -98,7 +98,7 @@
 <!-- Edit Modal -->
 <div id="editModal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-200">
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+        <div class="bg-gradient-to-r from-orange-500 to-orange-600  px-6 py-4">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">
                     <i class="fas fa-edit"></i>
@@ -189,7 +189,7 @@
 <!-- Add Modal -->
 <div id="rdvModal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-200">
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+        <div class="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">
                     <i class="fas fa-plus-circle"></i>

@@ -84,16 +84,7 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label class="block mb-2 font-medium text-gray-700">Mot de passe (accès planning)</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <i class="fas fa-lock text-gray-400"></i>
-                                </div>
-                                <input type="password" name="mot_de_passe" value="{{ old('mot_de_passe', $poseur->mot_de_passe) }}" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-500">
-                                <p class="text-xs text-gray-500 mt-1">Laissez vide pour conserver le mot de passe actuel</p>
-                            </div>
-                        </div>
+                     
 
                         <div class="flex items-center">
                             <div class="relative flex items-start">
