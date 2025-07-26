@@ -59,7 +59,7 @@
         </button>
     </form>
 
-    <!-- Bouton suppression photo (formulaire séparé) -->
+    <!-- Bouton suppression photo  -->
     @if ($user->photo)
         <form method="POST" action="{{ route('mon-compte.photo.delete') }}" class="mt-4"
               onsubmit="return confirm('Supprimer la photo de profil ?');">
@@ -99,10 +99,11 @@
             <input type="password" name="{{ $field['name'] }}" id="{{ $field['name'] }}"
                    class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#FF4B00]"
                    required>
-            <span class="absolute right-3 top-[35px] cursor-pointer text-gray-500"
-                  onclick="togglePassword('{{ $field['name'] }}')">
-                👁️
-            </span>
+            <button type="button"
+                    class="absolute right-3 top-[35px] text-gray-500 hover:text-[#FF4B00]"
+                    onclick="togglePassword('{{ $field['name'] }}')">
+                <i class="fas fa-eye"></i>
+            </button>
             @error($field['name'])
                 <span class="text-sm text-red-600">{{ $message }}</span>
             @enderror
@@ -114,6 +115,7 @@
             Mettre à jour le mot de passe
         </button>
     </form>
+
 
     <!-- Suppression de compte -->
     <hr class="my-10 border-t-2 border-gray-100">
