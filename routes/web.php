@@ -26,7 +26,8 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\DashboardPoseurController
+
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -35,11 +36,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', CompanyAccess::class])
     ->name('dashboard');
 
-Route::middleware(['auth', 'role:poseur'])->group(function () {
-    Route::get('/dashboard-poseur', [DashboardPoseurController::class, 'index'])->name('dashboard.poseur');
-    Route::post('/intervention/{id}/photo', [DashboardPoseurController::class, 'uploadPhoto'])->name('intervention.upload.photo');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/poseur/dashboard', [PoseurController::class, 'dashboard'])->name('poseur.dashboard');
+    Route::post('/poseur/intervention/{id}/commenter', [PoseurController::class, 'commenter'])->name('poseur.commenter');
 });
-
 
 
 Route::middleware(['auth', CompanyAccess::class])->group(function () {

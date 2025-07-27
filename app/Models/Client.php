@@ -66,4 +66,8 @@ public function company()
 {
     return $this->belongsTo(Company::class);
 }
+public function interventions()
+    {
+        return $this->hasMany(Intervention::class);
+    }
 }
