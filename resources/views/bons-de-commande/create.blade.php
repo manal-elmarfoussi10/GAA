@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-8 text-gray-800 border-b-2 border-orange-500 pb-2">Créer un nouveau bon de commande</h1>
     
-    <form action="{{ route('bons-de-commande.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-lg shadow-lg">
+    <form action="{{ route('bons-de-commande.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-lg shadow-lg" id="order-form">
         @csrf
         
         <!-- Client & Supplier Section -->
@@ -19,7 +19,7 @@
                     <option value="">Sélectionnez un client</option>
                     @foreach($clients as $client)
                         <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
-                            {{ $client->nom }}
+                            {{ $client->nom_assure }} {{ $client->prenom }}
                         </option>
                     @endforeach
                 </select>
@@ -38,7 +38,7 @@
                     <option value="">Sélectionnez un fournisseur</option>
                     @foreach($fournisseurs as $fournisseur)
                         <option value="{{ $fournisseur->id }}" {{ old('fournisseur_id') == $fournisseur->id ? 'selected' : '' }}>
-                            {{ $fournisseur->nom }}
+                            {{ $fournisseur->nom_societe }}
                         </option>
                     @endforeach
                 </select>
@@ -92,7 +92,9 @@
                             <option value="">Sélectionnez un produit</option>
                             <option value="autre">Autre produit</option>
                             @foreach($produits as $produit)
-                                <option value="{{ $produit->id }}">{{ $produit->nom }}</option>
+                                <option value="{{ $produit->id }}" data-price="{{ $produit->prix }}">
+                                    {{ $produit->nom }} ({{ number_format($produit->prix, 2, ',', ' ') }} €)
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -104,17 +106,17 @@
                     
                     <div class="md:col-span-2">
                         <label class="block text-gray-700 font-medium mb-2">Quantité</label>
-                        <input type="number" name="lignes[0][quantite]" min="1" value="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
+                        <input type="number" name="lignes[0][quantite]" min="1" value="1" class="quantity w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
                     </div>
                     
                     <div class="md:col-span-3">
                         <label class="block text-gray-700 font-medium mb-2">Prix unitaire (€)</label>
-                        <input type="number" name="lignes[0][prix]" step="0.01" min="0" value="0" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
+                        <input type="number" name="lignes[0][prix]" step="0.01" min="0" value="0" class="price w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
                     </div>
                     
                     <div class="md:col-span-3">
                         <label class="block text-gray-700 font-medium mb-2">Remise (%)</label>
-                        <input type="number" name="lignes[0][remise]" step="0.01" min="0" max="100" value="0" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
+                        <input type="number" name="lignes[0][remise]" step="0.01" min="0" max="100" value="0" class="discount w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
                     </div>
                     
                     <div class="md:col-span-3 flex items-center">
@@ -128,6 +130,14 @@
                         <button type="button" class="remove-line bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition flex items-center justify-center">
                             <i class="fas fa-trash"></i>
                         </button>
+                    </div>
+                    
+                    <!-- Line total display -->
+                    <div class="md:col-span-12 mt-4">
+                        <div class="flex justify-between items-center p-3 bg-orange-100 rounded-lg">
+                            <span class="font-bold text-orange-700">Total ligne:</span>
+                            <span class="line-total font-bold text-orange-700">0.00 €</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -145,7 +155,7 @@
                     Total HT (€)*
                 </label>
                 <input type="number" name="total_ht" id="total_ht" step="0.01" min="0" required 
-                       value="{{ old('total_ht') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
+                       value="{{ old('total_ht', 0) }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition bg-white" readonly>
                 @error('total_ht')
                     <p class="text-red-500 text-sm mt-2 font-medium">{{ $message }}</p>
                 @enderror
@@ -157,7 +167,7 @@
                     TVA (€)*
                 </label>
                 <input type="number" name="tva" id="tva" step="0.01" min="0" required 
-                       value="{{ old('tva') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
+                       value="{{ old('tva', 0) }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition bg-white" readonly>
                 @error('tva')
                     <p class="text-red-500 text-sm mt-2 font-medium">{{ $message }}</p>
                 @enderror
@@ -169,10 +179,24 @@
                     Total TTC (€)*
                 </label>
                 <input type="number" name="total_ttc" id="total_ttc" step="0.01" min="0" required 
-                       value="{{ old('total_ttc') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
+                       value="{{ old('total_ttc', 0) }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition bg-white" readonly>
                 @error('total_ttc')
                     <p class="text-red-500 text-sm mt-2 font-medium">{{ $message }}</p>
                 @enderror
+            </div>
+            
+            <!-- TVA Rate Selection -->
+            <div class="md:col-span-3 mb-4 mt-2">
+                <label for="tva_rate" class="block text-gray-700 font-bold mb-3 flex items-center">
+                    <i class="fas fa-percentage text-orange-500 mr-2"></i>
+                    Taux de TVA (%)
+                </label>
+                <select id="tva_rate" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 transition">
+                    <option value="20" selected>20% (Standard)</option>
+                    <option value="10">10% (Réduit)</option>
+                    <option value="5.5">5.5% (Intermédiaire)</option>
+                    <option value="2.1">2.1% (Particulier)</option>
+                </select>
             </div>
         </div>
         
@@ -223,9 +247,10 @@
             newLine.querySelector('.product-select').value = '';
             newLine.querySelector('.product-name-container').classList.add('hidden');
             newLine.querySelector('input[name*="nom_produit"]').value = '';
-            newLine.querySelector('input[name*="quantite"]').value = '1';
-            newLine.querySelector('input[name*="prix"]').value = '0';
-            newLine.querySelector('input[name*="remise"]').value = '0';
+            newLine.querySelector('.quantity').value = '1';
+            newLine.querySelector('.price').value = '0';
+            newLine.querySelector('.discount').value = '0';
+            newLine.querySelector('.line-total').textContent = '0.00 €';
             newLine.querySelector('input[name*="ajouter_au_stock"]').checked = false;
             
             // Add to container
@@ -233,19 +258,33 @@
             
             // Reattach event listeners
             attachProductLineEvents(newLine);
+            
+            // Recalculate totals
+            calculateOrderTotals();
         });
         
         // Handle product selection change
         function attachProductLineEvents(line) {
             const productSelect = line.querySelector('.product-select');
             const productNameContainer = line.querySelector('.product-name-container');
+            const priceInput = line.querySelector('.price');
             
             productSelect.addEventListener('change', function() {
                 if (this.value === 'autre') {
                     productNameContainer.classList.remove('hidden');
+                    priceInput.value = '0';
                 } else {
                     productNameContainer.classList.add('hidden');
+                    
+                    // Set price from selected product
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (selectedOption && selectedOption.dataset.price) {
+                        priceInput.value = selectedOption.dataset.price;
+                    }
                 }
+                
+                // Calculate line total
+                calculateLineTotal(line);
             });
             
             // Remove line button
@@ -253,12 +292,63 @@
                 // Only remove if there's more than one line
                 if (document.querySelectorAll('.product-line').length > 1) {
                     line.remove();
+                    calculateOrderTotals();
                 }
             });
+            
+            // Add event listeners for quantity, price, discount inputs
+            line.querySelector('.quantity').addEventListener('input', () => calculateLineTotal(line));
+            line.querySelector('.price').addEventListener('input', () => calculateLineTotal(line));
+            line.querySelector('.discount').addEventListener('input', () => calculateLineTotal(line));
+        }
+        
+        // Calculate line total
+        function calculateLineTotal(line) {
+            const quantity = parseFloat(line.querySelector('.quantity').value) || 0;
+            const price = parseFloat(line.querySelector('.price').value) || 0;
+            const discount = parseFloat(line.querySelector('.discount').value) || 0;
+            
+            // Calculate discounted price
+            const discountedPrice = price * (1 - discount / 100);
+            const lineTotal = quantity * discountedPrice;
+            
+            // Update line total display
+            line.querySelector('.line-total').textContent = lineTotal.toFixed(2) + ' €';
+            
+            // Update order totals
+            calculateOrderTotals();
+        }
+        
+        // Calculate order totals
+        function calculateOrderTotals() {
+            let totalHT = 0;
+            
+            // Sum all line totals
+            document.querySelectorAll('.product-line').forEach(line => {
+                const lineTotalText = line.querySelector('.line-total').textContent;
+                const lineTotal = parseFloat(lineTotalText.replace(' €', '')) || 0;
+                totalHT += lineTotal;
+            });
+            
+            // Get TVA rate
+            const tvaRate = parseFloat(document.getElementById('tva_rate').value) || 20;
+            const tva = totalHT * (tvaRate / 100);
+            const totalTTC = totalHT + tva;
+            
+            // Update order totals
+            document.getElementById('total_ht').value = totalHT.toFixed(2);
+            document.getElementById('tva').value = tva.toFixed(2);
+            document.getElementById('total_ttc').value = totalTTC.toFixed(2);
         }
         
         // Attach events to initial line
         attachProductLineEvents(document.querySelector('.product-line'));
+        
+        // Add event listener to TVA rate selector
+        document.getElementById('tva_rate').addEventListener('change', calculateOrderTotals);
+        
+        // Initialize calculations
+        calculateLineTotal(document.querySelector('.product-line'));
     });
 </script>
 
@@ -297,6 +387,14 @@
     
     .border-orange-300 {
         border-color: #fda56e;
+    }
+    
+    .bg-orange-100 {
+        background-color: #ffedcc;
+    }
+    
+    .text-orange-700 {
+        color: #cc5500;
     }
 </style>
 @endsection

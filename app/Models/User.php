@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -83,5 +82,14 @@ class User extends Authenticatable
         return in_array($this->role, $roles);
     }
 
+    public function getRoleLabelAttribute()
+{
+    $roles = self::roles();
+    return $roles[$this->role] ?? $this->role;
+}
 
+
+public function replies() {
+    return $this->hasMany(Reply::class, 'sender_id');
+}
 }

@@ -154,25 +154,7 @@
                         @enderror
                     </div>
                     
-                    <!-- Attachments -->
-                    <div class="md:col-span-2">
-                        <label for="attachments" class="block text-sm font-medium text-gray-700 mb-1">Pièces jointes</label>
-                        <div class="flex items-center justify-center w-full">
-                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6" id="dropzone-content">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 mb-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez</p>
-                                    <p class="text-xs text-gray-500">PDF, JPG, PNG (MAX. 5MB)</p>
-                                </div>
-                                <input id="dropzone-file" type="file" name="attachments[]" class="hidden" multiple>
-                            </label>
-                        </div> 
-                        @error('attachments.*')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+             
                 </div>
             </div>
             

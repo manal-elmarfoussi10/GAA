@@ -32,4 +32,8 @@ public function clients()
 {
     return $this->hasMany(Client::class);
 }
+public function bondecommandes()
+{
+    return $this->hasMany(BonDeCommande::class);
+}
 }
