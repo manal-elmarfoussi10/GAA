@@ -29,6 +29,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\DashboardPoseurController;
 
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -36,6 +37,11 @@ Route::get('/', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', CompanyAccess::class])
     ->name('dashboard');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/poseur/dashboard', [PoseurController::class, 'dashboard'])->name('poseur.dashboard');
+    Route::post('/poseur/intervention/{id}/commenter', [PoseurController::class, 'commenter'])->name('poseur.commenter');
+});
 
 
 
@@ -46,7 +52,7 @@ Route::get('/dashboard/poseur', [DashboardPoseurController::class, 'index'])
     Route::get('/poseur/dossiers', [DashboardPoseurController::class, 'dossiers'])
     ->middleware(['auth', CompanyAccess::class])
     ->name('poseur.dossiers');
-    
+
 Route::post('/poseur/intervention/{id}/comment', [DashboardPoseurController::class, 'ajouterCommentaire'])
     ->middleware(['auth', CompanyAccess::class])
     ->name('poseur.comment');

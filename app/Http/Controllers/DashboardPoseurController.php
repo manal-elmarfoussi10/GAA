@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 use App\Models\Intervention;
 
@@ -58,4 +59,7 @@ public function ajouterCommentaire(Request $request, $id)
     return back()->with('success', 'Commentaire ajouté avec succès.');
 }
 
+
 }
+
+

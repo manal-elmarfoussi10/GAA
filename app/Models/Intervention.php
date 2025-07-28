@@ -12,9 +12,10 @@ class Intervention extends Model
     protected $fillable = [
         'poseur_id',
         'client_id',
+        'titre',
         'date',
         'commentaire',
-        'photo',
+        'photo'
     ];
 
     public function poseur()
@@ -25,5 +26,15 @@ class Intervention extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
+    }
+
+    public function commentaires()
+    {
+        return $this->hasMany(Commentaire::class);
     }
 }
