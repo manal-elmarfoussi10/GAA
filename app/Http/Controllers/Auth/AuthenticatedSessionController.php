@@ -49,7 +49,7 @@ class AuthenticatedSessionController extends Controller
 
             case 'planner':
             case 'poseur':
-                return redirect()->route('rdv.calendar'); // calendrier
+                return redirect()->route('dashboard.poseur'); // calendrier
 
             case 'comptable':
                 return redirect()->route('comptable.dashboard'); // dashboard comptable

@@ -27,7 +27,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ConversationController;
-
+use App\Http\Controllers\DashboardPoseurController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -36,6 +36,22 @@ Route::get('/', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', CompanyAccess::class])
     ->name('dashboard');
+
+
+
+Route::get('/dashboard/poseur', [DashboardPoseurController::class, 'index'])
+    ->middleware(['auth', CompanyAccess::class])
+    ->name('dashboard.poseur');
+
+    Route::get('/poseur/dossiers', [DashboardPoseurController::class, 'dossiers'])
+    ->middleware(['auth', CompanyAccess::class])
+    ->name('poseur.dossiers');
+    
+Route::post('/poseur/intervention/{id}/comment', [DashboardPoseurController::class, 'ajouterCommentaire'])
+    ->middleware(['auth', CompanyAccess::class])
+    ->name('poseur.comment');
+
+
 
 
 Route::middleware(['auth', CompanyAccess::class])->group(function () {
@@ -160,7 +176,7 @@ Route::get('/factures/export/pdf', [FactureController::class, 'exportFacturesPDF
 
 Route::post('/clients/{client}/conversation', [ConversationController::class, 'sendMessage'])
      ->name('conversations.send');
-     
+
     Route::get('/acheter-unites', [UnitController::class, 'showPurchaseForm'])->name('units.form');
     Route::post('/acheter-unites', [UnitController::class, 'purchase'])->name('units.purchase');
 
