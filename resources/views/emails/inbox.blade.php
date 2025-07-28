@@ -46,12 +46,16 @@
                     {{-- Email content --}}
                     <a href="{{ route('emails.show', $email->id) }}" class="flex-1 min-w-0">
                         <div class="flex items-baseline">
-                            <span class="font-semibold text-gray-800 truncate mr-3">{{ $email->sender }}</span>
+                            <span class="font-semibold text-gray-800 truncate mr-3">{{ $email->senderUser->name }}</span>
+                            <span class="text-sm text-gray-500 ml-2">to {{ $email->receiverUser->name }}</span>
                             @if($email->tag)
                                 <span class="text-xs px-2 py-1 rounded-full font-medium text-white truncate"
                                       style="background-color: {{ $email->tag_color ?? '#999' }}">
                                     {{ ucfirst($email->tag) }}
                                 </span>
+                            @endif
+                            @if($email->conversation_id)
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">Thread</span>
                             @endif
                         </div>
                         
@@ -59,6 +63,13 @@
                             <div>
                                 <span class="font-medium text-gray-800">{{ $email->subject }}</span>
                                 <span class="text-gray-500 text-sm ml-2">- {{ \Illuminate\Support\Str::limit(strip_tags($email->content), 70) }}</span>
+                                @if($email->file_path)
+                                    <div class="mt-1">
+                                        <a href="{{ Storage::url($email->file_path) }}" target="_blank" class="text-cyan-600 hover:text-cyan-800 text-sm flex items-center">
+                                            <i class="fas fa-paperclip mr-1"></i> Download attachment
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
                             <div class="text-xs text-gray-500 whitespace-nowrap ml-2">
                                 {{ $email->created_at->format('h:i A') }}

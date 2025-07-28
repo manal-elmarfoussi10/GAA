@@ -2,27 +2,38 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Email;
+use App\Models\User;
 
 class Reply extends Model
 {
-    protected $fillable = [
-        'email_id', 'sender_id', 'content', 
-        'file_path', 'file_name'
-    ];
+    use HasFactory;
 
-    public function conversation()
+   // app/Models/Reply.php
+   protected $fillable = [
+    'email_id',
+    'conversation_id',
+    'sender_id',
+    'receiver_id',
+    'content',
+    'file_path',
+    'file_name',
+  ];
+
+    public function email()
     {
-        return $this->belongsTo(Conversation::class, 'email_id');
+        return $this->belongsTo(Email::class);
     }
 
-    public function sender()
+    public function senderUser()
     {
         return $this->belongsTo(User::class, 'sender_id');
     }
 
-    public function email()
+    public function receiverUser()
     {
-        return $this->belongsTo(Email::class, 'email_id');
+        return $this->belongsTo(User::class, 'receiver_id');
     }
 }

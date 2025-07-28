@@ -27,6 +27,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ConversationController;
+use App\Http\Middleware\CheckCompanyAccess;
 
 
 Route::get('/', function () {
@@ -37,7 +38,13 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', CompanyAccess::class])
     ->name('dashboard');
 
+    Route::post('/clients/{client}/conversations', [ConversationController::class, 'store'])
+    ->name('conversations.store')
+    ->middleware(CheckCompanyAccess::class);
 
+
+    // routes/web.php
+Route::post('/conversations/reply/{email}', [ConversationController::class, 'reply'])->name('conversations.reply');
 Route::middleware(['auth', CompanyAccess::class])->group(function () {
     Route::get('/user/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/user/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -53,6 +60,15 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
     Route::delete('/clients/{client}', [ClientController::class, 'destroy'])
     ->name('clients.destroy');
     Route::get('/clients/{client}/export-pdf', [ClientController::class, 'exportPdf'])->name('clients.export.pdf');
+    // Delete an entire conversation thread:
+Route::delete('conversations/{thread}', [ConversationController::class, 'destroyThread'])
+->name('conversations.destroyThread');
+Route::get('conversations/download/{reply}', [\App\Http\Controllers\ConversationController::class, 'download'])
+    ->name('conversations.download');
+    Route::get('conversations/{reply}/download', [ConversationController::class, 'download'])
+     ->name('conversations.download');
+     Route::resource('clients', ClientController::class);
+     
 
     Route::get('/calendar', [RdvController::class, 'calendar'])->name('rdv.calendar');
     Route::get('/calendar/events', [RdvController::class, 'events'])->name('rdv.events');
@@ -160,7 +176,7 @@ Route::get('/factures/export/pdf', [FactureController::class, 'exportFacturesPDF
 
 Route::post('/clients/{client}/conversation', [ConversationController::class, 'sendMessage'])
      ->name('conversations.send');
-     
+
     Route::get('/acheter-unites', [UnitController::class, 'showPurchaseForm'])->name('units.form');
     Route::post('/acheter-unites', [UnitController::class, 'purchase'])->name('units.purchase');
 
@@ -194,14 +210,14 @@ Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->nam
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
-Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 // Conversation routes
 Route::post('/clients/{client}/conversations', [ConversationController::class, 'store'])
      ->name('conversations.store');
 
-Route::post('/conversations/{conversation}/replies', [ConversationController::class, 'reply'])
-     ->name('conversations.reply');
+     Route::get('conversations/fetch/{client}', [ConversationController::class, 'fetch'])
+     ->name('conversations.fetch');
+   
 
 Route::get('/replies/{reply}/download', [ConversationController::class, 'download'])
      ->name('conversations.download');

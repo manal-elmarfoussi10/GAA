@@ -64,6 +64,19 @@ public function store(Request $request)
             'id_photo_verso' => 'nullable|file',
             'tva_exemption_doc' => 'nullable|file',
             'invoice_terms_doc' => 'nullable|file',
+
+            'legal_form'            => 'nullable|string|max:255',
+            'capital'               => 'nullable|numeric',
+            'head_office_address'   => 'nullable|string|max:255',
+            'rcs_number'            => 'nullable|string|max:255',
+            'rcs_city'              => 'nullable|string|max:255',
+            'naf_code'              => 'nullable|string|max:50',
+            'professional_insurance'=> 'nullable|string|max:255',
+            'representative'        => 'nullable|string|max:255',
+            'tva_regime'            => 'nullable|string|max:255',
+            'eco_contribution'      => 'nullable|string|max:255',
+            'penalty_rate'          => 'nullable|string|max:50',
+            'methode_paiement'      => 'nullable|string|max:255',
         ]);
 
         // Handle file uploads

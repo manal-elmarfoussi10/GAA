@@ -374,6 +374,199 @@
     </div>
 </div>
 
+<!-- Conversation Section -->
+<div class="bg-white rounded-xl shadow-md p-6 mb-8">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-gray-800">Conversations</h2>
+        <button id="newConversationBtn" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+            Nouvelle Conversation
+        </button>
+    </div>
+
+    <!-- New Conversation Form -->
+    <div id="newConversationForm" class="hidden mb-8">
+        <form method="POST" action="{{ route('conversations.store', $client->id) }}" enctype="multipart/form-data">
+            @csrf
+            <div class="mb-4">
+                <label for="receiver" class="block text-sm font-medium text-gray-700">Destinataire</label>
+                <select name="receiver" id="receiver" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="subject" class="block text-sm font-medium text-gray-700">Sujet</label>
+                <input type="text" name="subject" id="subject" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm" required>
+            </div>
+            <div class="mb-4">
+                <label for="content" class="block text-sm font-medium text-gray-700">Message</label>
+                <textarea name="content" id="content" rows="3" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm" required></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="file" class="block text-sm font-medium text-gray-700">Fichier joint</label>
+                <input type="file" name="file" id="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100">
+            </div>
+            <div class="flex justify-end">
+                <button type="button" id="cancelNewConversation" class="mr-2 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium">
+                    Annuler
+                </button>
+                <button type="submit" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                    Envoyer
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- List of Conversations -->
+    <div class="space-y-6">
+        @forelse ($client->conversations as $thread)
+            <div class="thread border rounded-lg p-4">
+                <div class="flex justify-between">
+                    <h3 class="font-semibold">{{ $thread->subject }}</h3>
+                    <span class="text-sm text-gray-500">
+                        Started by {{ $thread->creator->name ?? 'Deleted User' }} 
+                        on {{ $thread->created_at->format('d/m/Y H:i') }}
+                    </span>
+                </div>
+
+                <div class="mt-4">
+                    @foreach ($thread->emails as $email)
+                        @if($email->receiver_id == auth()->id() || $email->sender_id == auth()->id())
+                            <div class="email mb-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center">
+                                        <span class="text-cyan-800 text-sm font-medium">
+                                            {{ substr($email->senderUser->name, 0, 1) }}
+                                        </span>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="font-medium">{{ $email->senderUser->name }}</p>
+                                        <p class="text-sm text-gray-500">
+                                            to {{ $email->receiverUser->name }} · {{ $email->created_at->format('d/m/Y H:i') }}
+                                        </p>
+                                        <div class="mt-2 text-gray-700">
+                                            {!! nl2br(e($email->content)) !!}
+                                        </div>
+                                        @if($email->file_path)
+                                            <div class="mt-2">
+                                                <a href="{{ Storage::url($email->file_path) }}" target="_blank" class="text-cyan-600 hover:text-cyan-800 flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                    {{ $email->file_name }}
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <!-- Replies to this email -->
+                                <div class="replies pl-8 mt-4 space-y-4">
+                                    @foreach ($email->replies as $reply)
+                                        <div class="reply">
+                                            <div class="flex items-start">
+                                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center">
+                                                    <span class="text-cyan-800 text-sm font-medium">
+                                                        @if($reply->sender)
+                                                        {{ substr($reply->sender->name, 0, 2) }}
+                                                    @endif
+                                                    </span>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <p class="font-medium">{{ $reply->sender->name ?? 'Utilisateur inconnu' }}</p>
+                                                    <p class="text-sm text-gray-500">
+                                                        to {{ $reply->receiverUser->name }} · {{ $reply->created_at->format('d/m/Y H:i') }}
+                                                    </p>
+                                                    <div class="mt-2 text-gray-700">
+                                                        {!! nl2br(e($reply->content)) !!}
+                                                    </div>
+                                                    @if($reply->file_path)
+                                                        <div class="mt-2">
+                                                            <a href="{{ Storage::url($reply->file_path) }}" target="_blank" class="text-cyan-600 hover:text-cyan-800 flex items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                                </svg>
+                                                                {{ $reply->file_name }}
+                                                            </a>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+
+                <!-- Reply Form -->
+                @if($thread->emails->isNotEmpty())
+                <div id="messages-container">
+                <form method="POST" action="{{ route('conversations.reply', $thread->emails->first()->id) }}" enctype="multipart/form-data" class="mt-4">
+                        @csrf
+                        <!-- Add hidden email_id field -->
+                        <input type="hidden" name="email_id" value="{{ $thread->emails->first()->id }}">
+                        
+                        <div class="mb-4">
+                            <label for="content" class="block text-sm font-medium text-gray-700">Répondre</label>
+                            <textarea name="content" id="content" rows="3" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm" required></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label for="file" class="block text-sm font-medium text-gray-700">Fichier joint</label>
+                            <input type="file" name="file" id="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100">
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                                Envoyer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                @endif
+            </div>
+        @empty
+            <p class="text-gray-500">Aucune conversation pour ce client.</p>
+        @endforelse
+    </div>
+    <audio id="notificationSound" src="{{ asset('audio/notification.mp3') }}" preload="auto"></audio>
+</div>
+
+<script>
+    const sound = document.getElementById('notificationSound');
+    let lastCount = document.querySelectorAll('#messages-list .border').length;
+  
+    setInterval(() => {
+      fetch("{{ route('conversations.fetch', $client->id) }}")
+        .then(r => r.text())
+        .then(html => {
+          // Parse the returned partial
+          const temp = document.createElement('div');
+          temp.innerHTML = html;
+          // Count new messages
+          const newCount = temp.querySelectorAll('div.border').length;
+          if (newCount > lastCount) sound.play();
+          lastCount = newCount;
+          // Replace only the messages list
+          document.getElementById('messages-list').innerHTML = html;
+        });
+    }, 5000);
+  </script>
+
+
+<script>
+    // Toggle new conversation form
+    document.getElementById('newConversationBtn').addEventListener('click', function() {
+        document.getElementById('newConversationForm').classList.remove('hidden');
+        this.classList.add('hidden');
+    });
+
+    document.getElementById('cancelNewConversation').addEventListener('click', function() {
+        document.getElementById('newConversationForm').classList.add('hidden');
+        document.getElementById('newConversationBtn').classList.remove('hidden');
+    });
+</script>
 
     <!-- Timeline Section -->
     <div class="bg-white rounded-xl shadow-md p-6">

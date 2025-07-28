@@ -42,22 +42,22 @@
             {{-- Form Content --}}
             <form method="POST" action="{{ route('emails.store') }}" enctype="multipart/form-data" class="space-y-6 px-6 py-4">
                 @csrf
-
-                <!-- Hidden Receiver -->
-                <input type="hidden" name="receiver" value="support@yourdomain.com" />
-
-                {{-- Sender Name --}}
+                <input type="hidden" name="sender" value="{{ auth()->user()->name }}" />
+                {{-- Recipient --}}
                 <div class="relative">
-                    <label for="sender" class="block text-sm font-medium text-gray-700 mb-1">From:</label>
+                    <label for="receiver_id" class="block text-sm font-medium text-gray-700 mb-1">To:</label>
                     <div class="mt-1 relative">
-                        <input type="text" name="sender" id="sender"
-                               class="block w-full pl-3 pr-10 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                               placeholder="Your name" value="{{ old('sender') }}">
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <i class="fas fa-user text-gray-400"></i>
-                        </div>
+                        <select name="receiver_id" id="receiver_id" required
+                                class="block w-full pl-3 pr-10 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                            <option value="">Select recipient</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
+
+             
 
                 {{-- Subject --}}
                 <div class="relative">

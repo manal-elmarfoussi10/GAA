@@ -17,7 +17,8 @@ class Devis extends Model
         'date_validite',
         'total_ht',
         'total_tva',
-        'total_ttc'
+        'total_ttc',
+        
     ];
 
     public function client()

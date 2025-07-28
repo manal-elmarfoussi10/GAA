@@ -29,6 +29,18 @@ class Company extends Model
         'known_by',
         'contact_permission',
         'garage_type',
+        'legal_form',
+        'capital',
+        'head_office_address',
+        'rcs_number',
+        'rcs_city',
+        'naf_code',
+        'professional_insurance',
+        'representative',
+        'tva_regime',
+        'eco_contribution',
+        'penalty_rate',
+        'methode_paiement',
     ];
 
     public function users()

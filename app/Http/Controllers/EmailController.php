@@ -3,27 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Email;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Reply;
+use Illuminate\Support\Facades\Auth;      // ← Add this
+use Illuminate\Support\Facades\Storage; 
 
 class EmailController extends Controller
 {
     public function inbox()
     {
-        $emails = Email::where('folder', 'inbox')
-            ->where('is_deleted', false)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15); // Changed to paginate
-
+        $emails = Email::with(['senderUser', 'receiverUser'])
+            ->where('receiver_id', Auth::id())
+            ->latest()
+            ->paginate(10);
+    
         return view('emails.inbox', compact('emails'));
     }
-
+    
     public function sent()
     {
-        $emails = Email::where('folder', 'sent')
+        $emails = Email::with(['senderUser', 'receiverUser'])
+            ->where('sender_id', Auth::id())
             ->latest()
-            ->paginate(15); // Changed to paginate
-
+            ->paginate(10);
+    
         return view('emails.sent', compact('emails'));
     }
 
@@ -45,34 +49,42 @@ class EmailController extends Controller
 
     public function create()
     {
-        return view('emails.create');
+        // load only those roles you allow (admin, client service, etc.)
+        $users = User::where('company_id', auth()->user()->company_id)
+        ->get();
+    
+        return view('emails.create', compact('users'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'sender' => 'required|string',
-            'receiver' => 'nullable|string',
-            'subject' => 'required|string',
-            'content' => 'required|string',
-            'tag' => 'nullable|string',
+            'receiver_id' => 'required|exists:users,id',
+            'subject'     => 'required|string',
+            'content'     => 'required|string',
+            'file'        => 'nullable|file|max:10240',
         ]);
-
+    
         Email::create([
-            'sender' => $request->sender,
-            'receiver' => $request->receiver,
-            'subject' => $request->subject,
-            'content' => $request->content,
-            'tag' => $request->tag,
-            'folder' => 'sent',
+            'sender_id'   => Auth::id(),
+            'receiver_id' => $request->receiver_id,
+            'subject'     => $request->subject,
+            'content'     => $request->content,
+            'folder'      => 'sent',
+            // If you want to tie it back to a client record:
+            'client_id'   => $request->input('client_id'),
         ]);
-
+    
         return redirect()->route('emails.sent')->with('success', 'Email sent successfully.');
     }
-
     public function show($id)
     {
-        $email = Email::findOrFail($id);
+        $email = Email::with([
+            'senderUser',
+            'receiverUser',
+            'replies.senderUser',   // ← load each reply’s sender
+        ])->findOrFail($id);
+    
         return view('emails.show', compact('email'));
     }
 
@@ -157,10 +169,11 @@ class EmailController extends Controller
         ]);
 
         $reply = new Reply([
-            'email_id' => $email->id,
-            'content' => $request->content,
-            'file_path' => null,
-            'file_name' => null,
+            'email_id'   => $email->id,
+            'sender_id'  => Auth::id(),         // ← add this
+            'content'    => $request->content,
+            'file_path'  => null,
+            'file_name'  => null,
         ]);
 
         // Handle file upload if present
@@ -194,6 +207,13 @@ class EmailController extends Controller
 
         return redirect()->back()->with('success', 'Toutes les notifications ont été marquées comme lues.');
     }
+
+    public function markAsRead(Email $email)
+{
+    $email->markAsRead();
+    return back();
+}
+
 
     public function upload(Request $request)
 {

@@ -59,6 +59,38 @@
                             <input type="text" name="ape" value="{{ old('ape', $company->ape) }}" 
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
                         </div>
+
+                        <!-- New Legal Fields -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Forme juridique</label>
+                            <input type="text" name="legal_form" value="{{ old('legal_form', $company->legal_form) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Capital social (€)</label>
+                            <input type="number" step="0.01" name="capital" value="{{ old('capital', $company->capital) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Adresse siège social</label>
+                            <input type="text" name="head_office_address" value="{{ old('head_office_address', $company->head_office_address) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">RCS – Ville</label>
+                            <div class="flex space-x-2">
+                                <input type="text" name="rcs_number" placeholder="N° RCS" value="{{ old('rcs_number', $company->rcs_number) }}"
+                                       class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                                <input type="text" name="rcs_city" placeholder="Ville" value="{{ old('rcs_city', $company->rcs_city) }}"
+                                       class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Code NAF</label>
+                            <input type="text" name="naf_code" value="{{ old('naf_code', $company->naf_code) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        </div>
+                        <!-- End New Legal Fields -->
                     </div>
                 </div>
 
@@ -135,7 +167,54 @@
                             <input type="text" name="bic" value="{{ old('bic', $company->bic) }}" 
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
                         </div>
+                        <!-- Financial Legal Additions -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Régime TVA</label>
+                            <input type="text" name="tva_regime" value="{{ old('tva_regime', $company->tva_regime) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Éco-contribution</label>
+                            <input type="text" name="eco_contribution" value="{{ old('eco_contribution', $company->eco_contribution) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Pénalités de retard</label>
+                            <input type="text" name="penalty_rate" value="{{ old('penalty_rate', $company->penalty_rate) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mode de paiement</label>
+                            <input type="text" name="methode_paiement" value="{{ old('methode_paiement', $company->methode_paiement) }}"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        </div>
+                        <!-- End Financial Legal Additions -->
                     </div>
+
+                    <br><br>
+                <!-- Legal Extras -->
+                <div class="border-b border-gray-200 pb-8">
+                  <div class="flex items-center mb-6">
+                    <div class="bg-blue-100 text-blue-600 p-2 rounded-lg mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                      </svg>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-800">Informations légales</h2>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Assurance professionnelle</label>
+                      <input type="text" name="professional_insurance" value="{{ old('professional_insurance', $company->professional_insurance) }}"
+                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Mandataire</label>
+                      <input type="text" name="representative" value="{{ old('representative', $company->representative) }}"
+                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                    </div>
+                  </div>
+                </div>
                 </div>
 
                 <!-- Preferences -->

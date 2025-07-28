@@ -205,29 +205,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="company-info">
-                @if($company->logo)
-                <div class="logo-container">
-                    <img src="{{ $logoBase64 }}" alt="{{ $company->name }} Logo" class="company-logo">
-                </div>
-                @endif
-                <div class="company-text">
-                    <h1>{{ $company->commercial_name ?? $company->name }}</h1>
-                    <div class="company-details">
-                        {{ $company->address }}<br>
-                        {{ $company->postal_code }} {{ $company->city }}<br>
-                        Tél: {{ $company->phone }} | Email: {{ $company->email }}<br>
-                        SIRET: {{ $company->siret }} | TVA: {{ $company->tva }}
-                    </div>
-                </div>
-            </div>
-            <div class="report-info">
-                <div class="report-title">LISTE DES DEVIS</div>
-                <div class="report-date">Généré le {{ date('d/m/Y') }}</div>
-            </div>
-        </div>
+
         
         <!-- Table -->
         <div class="table-container">
@@ -297,9 +275,7 @@
             
             <div class="footer-divider"></div>
             
-            <div class="text-center text-sm">
-                Ce document a été généré électroniquement et ne nécessite pas de signature manuscrite
-            </div>
+          
         </div>
     </div>
 </body>

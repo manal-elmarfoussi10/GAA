@@ -60,6 +60,26 @@
                                     <div class="w-1/3 text-gray-500 font-medium">APE</div>
                                     <div class="w-2/3 text-gray-800">{{ $company->ape }}</div>
                                 </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Forme juridique</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->legal_form }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Capital social</div>
+                                    <div class="w-2/3 text-gray-800">{{ number_format($company->capital, 2, ',', ' ') }} €</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Adresse siège social</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->head_office_address }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">RCS – Ville</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->rcs_number }} – {{ $company->rcs_city }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Code NAF</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->naf_code }}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -138,6 +158,42 @@
                                 <div class="flex">
                                     <div class="w-1/3 text-gray-500 font-medium">BIC</div>
                                     <div class="w-2/3 text-gray-800">{{ $company->bic }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Régime TVA</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->tva_regime }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Éco-contribution</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->eco_contribution }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Pénalités de retard</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->penalty_rate }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Mode de paiement</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->methode_paiement }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Informations légales -->
+                        <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                            <div class="flex items-center mb-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                                </svg>
+                                <h3 class="text-lg font-semibold text-gray-800">Informations légales</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Assurance professionnelle</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->professional_insurance }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-1/3 text-gray-500 font-medium">Mandataire</div>
+                                    <div class="w-2/3 text-gray-800">{{ $company->representative }}</div>
                                 </div>
                             </div>
                         </div>

@@ -92,9 +92,10 @@
                             <option value="">Sélectionnez un produit</option>
                             <option value="autre">Autre produit</option>
                             @foreach($produits as $produit)
-                                <option value="{{ $produit->id }}" data-price="{{ $produit->prix }}">
-                                    {{ $produit->nom }} ({{ number_format($produit->prix, 2, ',', ' ') }} €)
-                                </option>
+                            <option value="{{ $produit->id }}"
+                                    data-price="{{ $produit->prix_ht }}">
+                                {{ $produit->nom }} ({{ number_format($produit->prix_ht, 2, ',', ' ') }} €)
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -228,128 +229,71 @@
     </form>
 </div>
 
+
+</style>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add new product line
-        const addLineBtn = document.getElementById('add-line');
-        const productLines = document.getElementById('product-lines');
-        let lineCount = 1; // Start from 1 because we have one initial row
-        
-        addLineBtn.addEventListener('click', function() {
-            const newLine = document.querySelector('.product-line').cloneNode(true);
-            const newIndex = lineCount++;
-            
-            // Update names and IDs
-            newLine.innerHTML = newLine.innerHTML.replace(/\[0\]/g, `[${newIndex}]`);
-            newLine.innerHTML = newLine.innerHTML.replace(/_0/g, `_${newIndex}`);
-            
-            // Reset values
-            newLine.querySelector('.product-select').value = '';
-            newLine.querySelector('.product-name-container').classList.add('hidden');
-            newLine.querySelector('input[name*="nom_produit"]').value = '';
-            newLine.querySelector('.quantity').value = '1';
-            newLine.querySelector('.price').value = '0';
-            newLine.querySelector('.discount').value = '0';
-            newLine.querySelector('.line-total').textContent = '0.00 €';
-            newLine.querySelector('input[name*="ajouter_au_stock"]').checked = false;
-            
-            // Add to container
-            productLines.appendChild(newLine);
-            
-            // Reattach event listeners
-            attachProductLineEvents(newLine);
-            
-            // Recalculate totals
-            calculateOrderTotals();
-        });
-        
-        // Handle product selection change
-        function attachProductLineEvents(line) {
-            const productSelect = line.querySelector('.product-select');
-            const productNameContainer = line.querySelector('.product-name-container');
-            const priceInput = line.querySelector('.price');
-            
-            productSelect.addEventListener('change', function() {
-                if (this.value === 'autre') {
-                    productNameContainer.classList.remove('hidden');
-                    priceInput.value = '0';
-                } else {
-                    productNameContainer.classList.add('hidden');
-                    
-                    // Set price from selected product
-                    const selectedOption = this.options[this.selectedIndex];
-                    if (selectedOption && selectedOption.dataset.price) {
-                        priceInput.value = selectedOption.dataset.price;
-                    }
-                }
-                
-                // Calculate line total
-                calculateLineTotal(line);
-            });
-            
-            // Remove line button
-            line.querySelector('.remove-line').addEventListener('click', function() {
-                // Only remove if there's more than one line
-                if (document.querySelectorAll('.product-line').length > 1) {
-                    line.remove();
-                    calculateOrderTotals();
-                }
-            });
-            
-            // Add event listeners for quantity, price, discount inputs
-            line.querySelector('.quantity').addEventListener('input', () => calculateLineTotal(line));
-            line.querySelector('.price').addEventListener('input', () => calculateLineTotal(line));
-            line.querySelector('.discount').addEventListener('input', () => calculateLineTotal(line));
-        }
-        
-        // Calculate line total
-        function calculateLineTotal(line) {
-            const quantity = parseFloat(line.querySelector('.quantity').value) || 0;
-            const price = parseFloat(line.querySelector('.price').value) || 0;
-            const discount = parseFloat(line.querySelector('.discount').value) || 0;
-            
-            // Calculate discounted price
-            const discountedPrice = price * (1 - discount / 100);
-            const lineTotal = quantity * discountedPrice;
-            
-            // Update line total display
-            line.querySelector('.line-total').textContent = lineTotal.toFixed(2) + ' €';
-            
-            // Update order totals
-            calculateOrderTotals();
-        }
-        
-        // Calculate order totals
-        function calculateOrderTotals() {
-            let totalHT = 0;
-            
-            // Sum all line totals
-            document.querySelectorAll('.product-line').forEach(line => {
-                const lineTotalText = line.querySelector('.line-total').textContent;
-                const lineTotal = parseFloat(lineTotalText.replace(' €', '')) || 0;
-                totalHT += lineTotal;
-            });
-            
-            // Get TVA rate
-            const tvaRate = parseFloat(document.getElementById('tva_rate').value) || 20;
-            const tva = totalHT * (tvaRate / 100);
-            const totalTTC = totalHT + tva;
-            
-            // Update order totals
-            document.getElementById('total_ht').value = totalHT.toFixed(2);
-            document.getElementById('tva').value = tva.toFixed(2);
-            document.getElementById('total_ttc').value = totalTTC.toFixed(2);
-        }
-        
-        // Attach events to initial line
-        attachProductLineEvents(document.querySelector('.product-line'));
-        
-        // Add event listener to TVA rate selector
-        document.getElementById('tva_rate').addEventListener('change', calculateOrderTotals);
-        
-        // Initialize calculations
-        calculateLineTotal(document.querySelector('.product-line'));
+document.addEventListener('DOMContentLoaded', function() {
+  const productLines = document.getElementById('product-lines');
+  let lineCount = 1;
+
+  function attachEvents(line) {
+    const select = line.querySelector('.product-select');
+    const priceInput = line.querySelector('.price');
+    const qtyInput = line.querySelector('.quantity');
+    const discountInput = line.querySelector('.discount');
+    const removeBtn = line.querySelector('.remove-line');
+
+    select.addEventListener('change', () => {
+      const price = select.selectedOptions[0].dataset.price || 0;
+      priceInput.value = price;
+      calculateLineTotal(line);
     });
+    qtyInput.addEventListener('input', () => calculateLineTotal(line));
+    discountInput.addEventListener('input', () => calculateLineTotal(line));
+    removeBtn.addEventListener('click', () => {
+      if (productLines.querySelectorAll('.product-line').length > 1) {
+        line.remove();
+        calculateOrderTotals();
+      }
+    });
+  }
+
+  function calculateLineTotal(line) {
+    const qty = parseFloat(line.querySelector('.quantity').value) || 0;
+    const price = parseFloat(line.querySelector('.price').value) || 0;
+    const discount = parseFloat(line.querySelector('.discount').value) || 0;
+    const total = qty * price * (1 - discount / 100);
+    line.querySelector('.line-total').textContent = total.toFixed(2) + ' €';
+    calculateOrderTotals();
+  }
+
+  function calculateOrderTotals() {
+    let totalHT = 0;
+    productLines.querySelectorAll('.product-line').forEach(line => {
+      const text = line.querySelector('.line-total').textContent;
+      totalHT += parseFloat(text.replace(' €', '')) || 0;
+    });
+    const rate = parseFloat(document.getElementById('tva_rate').value) || 20;
+    document.getElementById('total_ht').value = totalHT.toFixed(2);
+    document.getElementById('tva').value = (totalHT * rate / 100).toFixed(2);
+    document.getElementById('total_ttc').value = (totalHT * (1 + rate / 100)).toFixed(2);
+  }
+
+  // Attach to initial line
+  attachEvents(productLines.querySelector('.product-line'));
+
+  // New line button
+  document.getElementById('add-line').addEventListener('click', () => {
+    const newLine = productLines.querySelector('.product-line').cloneNode(true);
+    const idx = lineCount++;
+    newLine.innerHTML = newLine.innerHTML
+      .replace(/\[0\]/g, `[${idx}]`)
+      .replace(/_0/g, `_${idx}`);
+    productLines.appendChild(newLine);
+    attachEvents(newLine);
+    calculateOrderTotals();
+  });
+});
 </script>
 
 <style>

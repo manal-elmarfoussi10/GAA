@@ -2,25 +2,46 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\Reply;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Conversation;
+use App\Models\Reply;
+use App\Models\User;
+use App\Models\Client;
+use App\Models\Company;
 
 class Email extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'sender', 'receiver', 'subject', 'content', 
-        'label', 'label_color', 'important', 'is_deleted', 'folder',
-        'client_id', 'company_id', 'thread_id' // Add client_id and company_id
+        'conversation_id',
+        'sender_id',
+        'receiver_id',
+        'subject',
+        'content',
+        'label',
+        'label_color',
+        'important',
+        'is_deleted',
+        'folder',
+        'client_id',
+        'company_id',
     ];
 
-    // Rename to conversation for clarity
-    public function replies()
+    public function conversation()
     {
-        return $this->hasMany(Reply::class, 'email_id');
+        return $this->belongsTo(ConversationThread::class, 'conversation_id');
+    }
+
+    public function senderUser()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    public function receiverUser()
+    {
+        return $this->belongsTo(User::class, 'receiver_id');
     }
 
     public function client()
@@ -32,25 +53,24 @@ class Email extends Model
     {
         return $this->belongsTo(Company::class);
     }
-    
-    // Alias for conversation
-    public function getConversationAttribute()
+
+    public function replies()
     {
-        return $this;
+        return $this->hasMany(Reply::class);
     }
 
     public function scopeForCompany($query, $companyId)
+    {
+        return $query->where('company_id', $companyId);
+    }
+
+    public function markAsRead()
 {
-    return $query->where('company_id', $companyId);
+    $this->update(['read' => true]);
 }
 
-public function thread()
+public function conversationThread()
 {
-    return $this->belongsTo(ConversationThread::class);
-}
-
-public function senderUser()
-{
-    return $this->belongsTo(User::class, 'sender_id');
+    return $this->belongsTo(ConversationThread::class, 'conversation_id');
 }
 }

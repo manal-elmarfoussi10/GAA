@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Rdv;
 use App\Models\company;
+use App\Models\ConversationThread;
+use App\Models\Email;
 
 
 class Client extends Model
@@ -59,11 +61,18 @@ public function bondecommandes()
 }
 public function conversations()
 {
-    return $this->hasMany(Email::class, 'client_id');
+    return $this->hasMany(ConversationThread::class);
 }
 
 public function company()
 {
     return $this->belongsTo(Company::class);
+}
+/**
+ * All email messages tied to this client.
+ */
+public function emails()
+{
+    return $this->hasMany(Email::class, 'client_id');
 }
 }

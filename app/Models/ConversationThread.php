@@ -1,25 +1,38 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Email;
+use App\Models\Client;
 
 class ConversationThread extends Model
 {
-    protected $fillable = ['client_id', 'company_id', 'subject'];
-    
+    use HasFactory;
+
+    protected $fillable = [
+        'client_id',
+        'company_id',
+        'subject',
+        'creator_id',
+    ];
+
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
-    
-    public function company()
+
+    // THIS is the creator relation your controller/view expects:
+    public function creator()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(User::class, 'creator_id');
     }
-    
-    public function messages()
+
+    public function emails()
     {
         return $this->hasMany(Email::class, 'thread_id');
     }
+
+ 
 }

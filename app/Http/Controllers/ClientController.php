@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Email; // Add this for conversations
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage; 
+use App\Models\User;
 
 class ClientController extends Controller
 {
@@ -39,22 +40,35 @@ class ClientController extends Controller
         return view('clients.index', compact('clients', 'columns'));
     }
 
-    public function show($id)
-    {
-        $client = Client::with([
-            'factures.avoirs',
-            'devis',
-            'photos',
-            'conversations' => function($query) {
-                $query->with(['replies' => function($q) {
-                    // Change to use 'email_id' in the relationship
-                    $q->with('sender')->orderBy('created_at', 'asc');
-                }])->orderBy('created_at', 'desc');
-            }
-        ])->findOrFail($id);
-    
-        return view('clients.show', compact('client'));
-    }
+ // app/Http/Controllers/ClientController.php
+// app/Http/Controllers/ClientController.php
+// app/Http/Controllers/ClientController.php
+public function show($id)
+{
+    $client = Client::with([
+        'factures.avoirs',
+        'devis',
+        'photos',
+        'conversations' => function ($q) {
+            $q->with([
+                'creator',
+                'emails' => function ($query) {
+                    $query->with([
+                        'senderUser', 
+                        'receiverUser', 
+                        'replies' => function ($q) {
+                            $q->with('senderUser');
+                        }
+                    ]);
+                }
+            ])->orderBy('created_at', 'desc');
+        }
+    ])->findOrFail($id);
+
+    $users = User::where('company_id', auth()->user()->company_id)->get();
+
+    return view('clients.show', compact('client', 'users'));
+}
 
     public function edit(Client $client)
     {
@@ -188,18 +202,24 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         try {
-            // Supprimer les relations d'abord (si nécessaire)
+            // Supprimer les conversations (et emails associés si nécessaire)
+            foreach ($client->conversations as $conversation) {
+                $conversation->emails()->delete(); // si emails a besoin d'être supprimé
+                $conversation->delete();
+            }
+    
+            // Supprimer les devis et factures
             $client->factures()->delete();
             $client->devis()->delete();
-
-            // Puis supprimer le client
+    
+            // Supprimer le client
             $client->delete();
-
+    
             return redirect()->route('clients.index')
                 ->with('success', 'Client supprimé avec succès');
         } catch (\Exception $e) {
             return redirect()->route('clients.index')
-                ->with('error', 'Erreur lors de la suppression du client: '.$e->getMessage());
+                ->with('error', 'Erreur lors de la suppression du client : ' . $e->getMessage());
         }
     }
 

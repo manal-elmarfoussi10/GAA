@@ -15,7 +15,7 @@
                     @svg('heroicon-o-inbox', 'w-4 h-4')
                     Inbox
                 </span>
-                <span class="text-sm font-medium">1253</span>
+                
             </a>
         </li>
 
@@ -28,7 +28,7 @@
                     @svg('heroicon-o-paper-airplane', 'w-4 h-4')
                     Sent
                 </span>
-                <span class="text-sm font-medium">24,532</span>
+                
             </a>
         </li>
 
@@ -41,7 +41,7 @@
                     @svg('heroicon-o-star', 'w-4 h-4')
                     Important
                 </span>
-                <span class="text-sm font-medium">18</span>
+                
             </a>
         </li>
 
@@ -54,7 +54,7 @@
                     @svg('heroicon-o-trash', 'w-4 h-4')
                     Bin
                 </span>
-                <span class="text-sm font-medium">9</span>
+                
             </a>
         </li>
     </ul>

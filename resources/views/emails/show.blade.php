@@ -1,5 +1,7 @@
 @extends('layout')
 
+@php use Illuminate\Support\Facades\Storage; @endphp
+
 @section('content')
 <div class="flex h-screen bg-gray-50">
     {{-- Sidebar --}}
@@ -35,12 +37,12 @@
                     <div class="flex justify-between items-start">
                         <div class="flex items-center">
                             <div class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg mr-3">
-                                {{ substr($email->sender_name, 0, 1) }}
+                                {{ substr(optional($email->senderUser)->name ?? '', 0, 1) }}
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-800">{{ $email->sender_name ?? 'N/A' }}</h3>
+                                <h3 class="font-semibold text-gray-800">{{ optional($email->senderUser)->name ?? 'N/A' }}</h3>
                                 <div class="text-sm text-gray-500">
-                                    <span>à moi</span>
+                                    <span>à {{ optional($email->receiverUser)->name ?? 'N/A' }}</span>
                                     <span class="mx-1">•</span>
                                     <span>{{ \Carbon\Carbon::parse($email->created_at)->format('d M, H:i') }}</span>
                                 </div>
@@ -61,13 +63,15 @@
                     <div class="mt-6">
                         <h4 class="text-sm font-medium text-gray-700 mb-2">Pièces jointes</h4>
                         <div class="flex flex-wrap gap-3">
-                            <a href="{{ asset('storage/' . $email->file_path) }}" target="_blank" class="flex items-center px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition">
+                            <a href="{{ Storage::url($email->file_path) }}" target="_blank" class="flex items-center px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition">
                                 <div class="mr-3 text-orange-500">
                                     <i class="fas fa-file-pdf text-xl"></i>
                                 </div>
                                 <div>
                                     <div class="font-medium text-sm text-gray-800">{{ $email->file_name ?? basename($email->file_path) }}</div>
-                                    <div class="text-xs text-gray-500">PDF • 1.2MB</div>
+                                    <div class="text-xs text-gray-500">
+                                      {{ strtoupper(pathinfo($email->file_path, PATHINFO_EXTENSION)) }} • {{ number_format(Storage::size($email->file_path) / 1024, 2) }} KB
+                                    </div>
                                 </div>
                             </a>
                         </div>
@@ -107,10 +111,10 @@
                             <div class="flex justify-between items-start">
                                 <div class="flex items-center">
                                     <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm mr-2">
-                                        {{ substr(auth()->user()->name, 0, 1) }}
+                                        {{ substr(optional($reply->senderUser)->name ?? '', 0, 1) }}
                                     </div>
                                     <div>
-                                        <h3 class="font-semibold text-gray-800">{{ auth()->user()->name }}</h3>
+                                        <h3 class="font-semibold text-gray-800">{{ optional($reply->senderUser)->name ?? 'N/A' }}</h3>
                                         <div class="text-xs text-gray-500">
                                             <span>{{ \Carbon\Carbon::parse($reply->created_at)->format('d M, H:i') }}</span>
                                         </div>
@@ -131,12 +135,12 @@
                             <div class="mt-4">
                                 <h4 class="text-xs font-medium text-gray-700 mb-1">Pièces jointes</h4>
                                 <div class="flex flex-wrap gap-2">
-                                    <a href="{{ asset('storage/' . $reply->file_path) }}" target="_blank" class="flex items-center px-2 py-1 bg-gray-50 rounded border border-gray-200 hover:bg-gray-100 transition">
+                                    <a href="{{ Storage::url($reply->file_path) }}" target="_blank" class="flex items-center px-2 py-1 bg-gray-50 rounded border border-gray-200 hover:bg-gray-100 transition">
                                         <div class="mr-2 text-blue-500">
                                             <i class="fas fa-file text-sm"></i>
                                         </div>
                                         <div class="text-xs font-medium text-gray-700 truncate max-w-xs">
-                                            {{ $reply->file_name }}
+                                            {{ $reply->file_name }} • {{ strtoupper(pathinfo($reply->file_path, PATHINFO_EXTENSION)) }} • {{ number_format(Storage::size($reply->file_path) / 1024, 2) }} KB
                                         </div>
                                     </a>
                                 </div>

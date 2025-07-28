@@ -209,32 +209,33 @@ public function exportPDF()
 
         return redirect()->route('factures.index')->with('success', 'Facture générée depuis le devis.');
     }
-    
+
+
     public function downloadSinglePdf($id)
-    {
-        $devis = Devis::with(['client', 'items'])->findOrFail($id);
-        $company = auth()->user()->company;
-        
-        // Handle company logo
-        $logoBase64 = null;
-        if ($company->logo) {
-            try {
-                $logoPath = storage_path('app/' . $company->logo);
-                if (file_exists($logoPath)) {
-                    $logoData = file_get_contents($logoPath);
-                    $logoBase64 = 'data:'.mime_content_type($logoPath).';base64,'.base64_encode($logoData);
-                }
-            } catch (\Exception $e) {
-                \Log::error('Error loading company logo: '.$e->getMessage());
+{
+    $devis = Devis::with(['client', 'items'])->findOrFail($id);
+
+    // Get the company of the authenticated user
+    $company = auth()->user()->company;
+
+    // Load company logo if it exists
+    $logoBase64 = null;
+    if ($company && $company->logo) {
+        try {
+            $logoPath = storage_path('app/public/' . $company->logo);
+            if (file_exists($logoPath)) {
+                $logoData = file_get_contents($logoPath);
+                $logoBase64 = 'data:' . mime_content_type($logoPath) . ';base64,' . base64_encode($logoData);
             }
+        } catch (\Exception $e) {
+            \Log::error('Error loading company logo: ' . $e->getMessage());
         }
-        
-        $pdf = PDF::loadView('devis.single-pdf', [
-            'devis' => $devis,
-            'company' => $company,
-            'logoBase64' => $logoBase64
-        ]);
-        
-        return $pdf->download("devis_{$devis->id}.pdf");
     }
+
+    return PDF::loadView('devis.single-pdf', [
+        'devis' => $devis,
+        'company' => $company,
+        'logoBase64' => $logoBase64,
+    ])->download("devis_{$devis->id}.pdf");
+}
 }

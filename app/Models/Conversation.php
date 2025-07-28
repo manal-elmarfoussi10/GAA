@@ -25,4 +25,8 @@ class Conversation extends Model
     {
         return $this->hasMany(Reply::class, 'email_id');
     }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
 }
