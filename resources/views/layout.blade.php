@@ -56,14 +56,34 @@
             ];
         @endphp
 
-        @foreach ($navItems as $item)
-            @php $isActive = request()->is($item['route'].'*'); @endphp
-            <a href="{{ url($item['route']) }}"
-               class="px-2 py-1 rounded transition duration-150 focus:outline-none focus:ring-2 focus:ring-[#FF4B00]
-                      {{ $isActive ? 'bg-[#FF4B00] text-white' : 'text-[#FF4B00] hover:bg-[#FFA366] hover:text-white' }}">
-                {{ $item['label'] }}
-            </a>
-        @endforeach
+
+        @php
+    $user = auth()->user();
+    $role = $user->role ?? '';
+
+    $navItems = [
+        ['label' => 'FONCTIONNALITÉS', 'route' => 'fonctionnalites'],
+        ['label' => 'CONTACT', 'route' => 'contact'],
+    ];
+
+    // Le poseur a son propre dashboard
+    if ($role === 'poseur') {
+        $navItems[] = ['label' => 'DASHBOARD', 'route' => 'dashboard/poseur'];
+    } else {
+        $navItems[] = ['label' => 'MON COMPTE', 'route' => 'mon-compte'];
+        $navItems[] = ['label' => 'DASHBOARD', 'route' => 'dashboard'];
+    }
+@endphp
+
+@foreach ($navItems as $item)
+    @php $isActive = request()->is($item['route'].'*'); @endphp
+    <a href="{{ url($item['route']) }}"
+       class="px-2 py-1 rounded transition duration-150 focus:outline-none focus:ring-2 focus:ring-[#FF4B00]
+              {{ $isActive ? 'bg-[#FF4B00] text-white' : 'text-[#FF4B00] hover:bg-[#FFA366] hover:text-white' }}">
+        {{ $item['label'] }}
+    </a>
+@endforeach
+
 
         <!-- Unités -->
         @php $isUnit = request()->is('acheter-unites'); @endphp

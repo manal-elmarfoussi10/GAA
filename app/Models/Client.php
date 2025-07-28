@@ -75,4 +75,8 @@ public function emails()
 {
     return $this->hasMany(Email::class, 'client_id');
 }
+public function interventions()
+    {
+        return $this->hasMany(Intervention::class);
+    }
 }

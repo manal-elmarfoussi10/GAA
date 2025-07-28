@@ -28,6 +28,7 @@ use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Middleware\CheckCompanyAccess;
+use App\Http\Controllers\DashboardPoseurController;
 
 
 Route::get('/', function () {
@@ -41,6 +42,27 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     Route::post('/clients/{client}/conversations', [ConversationController::class, 'store'])
     ->name('conversations.store')
     ->middleware(CheckCompanyAccess::class);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/poseur/dashboard', [PoseurController::class, 'dashboard'])->name('poseur.dashboard');
+    Route::post('/poseur/intervention/{id}/commenter', [PoseurController::class, 'commenter'])->name('poseur.commenter');
+});
+
+
+
+Route::get('/dashboard/poseur', [DashboardPoseurController::class, 'index'])
+    ->middleware(['auth', CompanyAccess::class])
+    ->name('dashboard.poseur');
+
+    Route::get('/poseur/dossiers', [DashboardPoseurController::class, 'dossiers'])
+    ->middleware(['auth', CompanyAccess::class])
+    ->name('poseur.dossiers');
+
+Route::post('/poseur/intervention/{id}/comment', [DashboardPoseurController::class, 'ajouterCommentaire'])
+    ->middleware(['auth', CompanyAccess::class])
+    ->name('poseur.comment');
+
+
+
 
 
     // routes/web.php
@@ -68,7 +90,7 @@ Route::get('conversations/download/{reply}', [\App\Http\Controllers\Conversation
     Route::get('conversations/{reply}/download', [ConversationController::class, 'download'])
      ->name('conversations.download');
      Route::resource('clients', ClientController::class);
-     
+
 
     Route::get('/calendar', [RdvController::class, 'calendar'])->name('rdv.calendar');
     Route::get('/calendar/events', [RdvController::class, 'events'])->name('rdv.events');
