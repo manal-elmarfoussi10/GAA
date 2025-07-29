@@ -120,7 +120,6 @@ Route::middleware(['auth', CompanyAccess::class])->group(function () {
         Route::post('/{email}/mark-important', 'markImportant')->name('emails.markImportant');
         Route::post('/{email}/move-to-trash', 'moveToTrash')->name('emails.moveToTrash');
         Route::get('/{email}/reply', 'reply')->name('emails.reply');
-        Route::post('/{email}/reply', 'reply')->name('emails.reply');
         Route::delete('/{email}', 'destroy')->name('emails.destroy');
         Route::post('/upload', 'upload')->name('emails.upload');
     });
