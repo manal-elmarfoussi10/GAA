@@ -11,17 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-Schema::create('interventions', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->onDelete('cascade');
-    $table->foreignId('dossier_id')->nullable()->constrained();
-    $table->date('date');
-    $table->string('adresse');
-    $table->timestamps();
-});
-
-
-
+        Schema::table('replies', function (Blueprint $table) {
+            $table->boolean('is_read')->default(false);
+        });
     }
 
     /**
@@ -29,6 +21,8 @@ Schema::create('interventions', function (Blueprint $table) {
      */
     public function down(): void
     {
-        Schema::dropIfExists('interventions');
+        Schema::table('replies', function (Blueprint $table) {
+            //
+        });
     }
 };

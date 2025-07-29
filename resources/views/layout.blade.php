@@ -30,18 +30,8 @@
    <nav class="bg-white px-4 py-3 flex justify-between items-center shadow text-sm">
 
     <!-- Barre de recherche  -->
-    <div class="relative w-40">
-        <input type="text"
-               placeholder="Rechercher..."
-               class="w-full pl-8 pr-6 py-1.5 rounded border border-[#FF4B00] bg-white text-gray-700 placeholder:text-gray-500 focus:outline-none focus:ring ring-orange-custom">
-        <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none">
-            <i class="fas fa-search text-[#FF4B00] text-xs"></i>
-        </div>
-        <div class="absolute inset-y-0 right-2 flex items-center">
-            <div class="bg-[#FFF1E8] text-[#FF4B00] text-[10px] px-1 py-0.5 rounded font-semibold">
-                ⌘
-            </div>
-        </div>
+    <div class="relative w-20">
+   
     </div>
 
     <!-- Navigation + Infos utilisateur -->
@@ -90,7 +80,7 @@
         <a href="{{ url('/acheter-unites') }}"
            class="px-2 py-1 rounded transition duration-150 focus:outline-none focus:ring-2 focus:ring-[#FF4B00]
                   {{ $isUnit ? 'bg-[#FF4B00] text-white' : 'text-[#FF4B00] hover:bg-[#FFA366] hover:text-white' }}">
-            NB UNITÉS : {{ session('unit_count', '0.00') }}
+            NB UNITÉS : <span class="text-white-600 font-bold">{{ auth()->user()->units ?? 0 }}</span>
         </a>
 
         <!-- Notifications -->

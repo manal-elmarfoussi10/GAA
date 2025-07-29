@@ -11,20 +11,17 @@ return new class extends Migration
      */
     public function up()
     {
-        // If you haven’t installed the DBAL package yet, do:
-        // composer require doctrine/dbal
         Schema::table('emails', function (Blueprint $table) {
-            $table->unsignedBigInteger('client_id')->nullable();
-            $table->foreign('client_id')->references('id')->on('clients')->nullOnDelete();
+            $table->unsignedBigInteger('thread_id')->nullable()->after('receiver_id');
+            $table->foreign('thread_id')->references('id')->on('conversation_threads')->onDelete('set null');
         });
     }
-
+    
     public function down()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->unsignedBigInteger('client_id')
-                  ->nullable(false)
-                  ->change();
+            $table->dropForeign(['thread_id']);
+            $table->dropColumn('thread_id');
         });
     }
 };

@@ -141,7 +141,7 @@
                             </form>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm col-avoir">
-                            <a href="#" class="bg-teal-100 text-teal-700 px-2 py-1 rounded">Télécharger</a>
+                            <a href="{{ route('avoirs.pdf', $avoir->id) }}" class="bg-teal-100 text-teal-700 px-2 py-1 rounded">Télécharger</a>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm col-ht">{{ number_format($avoir->montant, 2) }} €</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm col-ttc">{{ number_format($avoir->montant, 2) }} €</td>

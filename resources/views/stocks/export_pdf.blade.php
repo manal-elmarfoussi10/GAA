@@ -24,7 +24,7 @@
         <tbody>
             @foreach($stocks as $stock)
                 <tr>
-                    <td>{{ $stock->date }}</td>
+                    <td>{{ \Carbon\Carbon::parse($stock->created_at)->format('d/m/Y H:i') }}</td>
                     <td>{{ $stock->produit->nom ?? '' }}</td>
                     <td>{{ $stock->fournisseur->nom_societe ?? '' }}</td>
                     <td>{{ $stock->statut }}</td>

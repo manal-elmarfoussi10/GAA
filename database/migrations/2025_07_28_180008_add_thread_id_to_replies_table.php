@@ -12,17 +12,17 @@ return new class extends Migration
     public function up()
     {
         Schema::table('replies', function (Blueprint $table) {
-        
-            $table->unsignedBigInteger('receiver_id');
-            $table->foreign('receiver_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('thread_id')->nullable()->after('email_id');
+    
+            $table->foreign('thread_id')->references('id')->on('conversation_threads')->onDelete('cascade');
         });
     }
-
+    
     public function down()
     {
         Schema::table('replies', function (Blueprint $table) {
-            $table->dropForeign(['receiver_id']);
-            $table->dropColumn('receiver_id');
+            $table->dropForeign(['thread_id']);
+            $table->dropColumn('thread_id');
         });
     }
 };

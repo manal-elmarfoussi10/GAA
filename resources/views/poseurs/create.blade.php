@@ -83,8 +83,17 @@
                             </div>
                         </div>
 
-                      
+                        <div>
+                            <label class="block mb-2 font-medium text-gray-700">Mot de passe <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input type="text" name="mot_de_passe" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-500" required>
+                            </div>
+                        </div>
 
+                        <input type="hidden" name="actif" value="0">
                         <div class="flex items-center">
                             <div class="relative flex items-start">
                                 <div class="flex items-center h-5">

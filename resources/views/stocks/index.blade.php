@@ -391,7 +391,9 @@
                 <tbody>
                     @foreach($stocks as $stock)
                     <tr>
-                        <td>{{ $stock->date }}</td>
+                        <td>
+                            {{ $stock->created_at->format('d/m/Y H:i') }}
+                        </td>
                         <td>{{ $stock->produit->nom ?? 'N/A' }}</td>
                         <td>{{ $stock->fournisseur->nom_societe ?? 'N/A' }}</td>
                         <td>

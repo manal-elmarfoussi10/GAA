@@ -28,10 +28,14 @@
 
         {{-- Email list with enhanced design --}}
         <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-            @forelse($emails as $email)
+            @php
+                // Show emails with unread replies or not read by receiver
+                $emailsWithUnreadReplies = $emails->filter(function($email) {
+                    return $email->replies->where('read', false)->count() > 0 || !$email->is_read;
+                });
+            @endphp
+            @forelse($emailsWithUnreadReplies as $email)
                 <div class="group px-6 py-4 border-b border-gray-100 hover:bg-gray-50 transition-all duration-200 flex items-start">
-                 
-                    
                     {{-- Star/Important toggle --}}
                     <div class="mr-4">
                         <form method="POST" action="{{ route('emails.toggleImportant', $email->id) }}" 
@@ -42,7 +46,6 @@
                             </button>
                         </form>
                     </div>
-                    
                     {{-- Email content --}}
                     <a href="{{ route('emails.show', $email->id) }}" class="flex-1 min-w-0">
                         <div class="flex items-baseline">
@@ -57,11 +60,13 @@
                             @if($email->conversation_id)
                                 <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">Thread</span>
                             @endif
+                            @if(!$email->is_read)
+                                <span class="ml-2 inline-flex items-center justify-center w-3 h-3 rounded-full bg-red-500" title="Non lu"></span>
+                            @endif
                         </div>
-                        
                         <div class="mt-1 flex justify-between">
                             <div>
-                                <span class="font-medium text-gray-800">{{ $email->subject }}</span>
+                                <span class="{{ !$email->is_read ? 'font-bold text-gray-900' : 'font-medium text-gray-800' }}">{{ $email->subject }}</span>
                                 <span class="text-gray-500 text-sm ml-2">- {{ \Illuminate\Support\Str::limit(strip_tags($email->content), 70) }}</span>
                                 @if($email->file_path)
                                     <div class="mt-1">
@@ -76,7 +81,6 @@
                             </div>
                         </div>
                     </a>
-                    
                     {{-- Actions --}}
                     <div class="flex space-x-4 items-center text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity ml-4">
                         {{-- Move to trash --}}
@@ -87,8 +91,6 @@
                                 <i class="fas fa-trash hover:text-red-500"></i>
                             </button>
                         </form>
-                        
-                        
                     </div>
                 </div>
             @empty

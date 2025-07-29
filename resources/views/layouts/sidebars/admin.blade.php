@@ -1,5 +1,5 @@
 <div class="p-6 border-b border-gray-200 flex justify-center">
-    <img src="{{ asset('images/GA GESTION LOGO.png') }}" alt="GG AUTO Logo" class="h-12" />
+    <img src="{{ asset('images/gsauto.png') }}" alt="GG AUTO Logo" class="h-16" />
 </div>
 
 <nav class="flex-1 overflow-y-auto text-sm text-gray-700">
@@ -94,7 +94,7 @@
     </div>
 
     <ul class="space-y-1 px-2 py-2 border-t border-gray-200">
-        <li><a href="" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-orange-100"><i data-lucide="settings" class="w-4 h-4"></i> Paramètres</a></li>
+       
         <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-orange-100"><i data-lucide="log-out" class="w-4 h-4"></i> Déconnexion</a></li>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
     </ul>

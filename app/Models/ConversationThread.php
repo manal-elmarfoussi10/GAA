@@ -34,5 +34,10 @@ class ConversationThread extends Model
         return $this->hasMany(Email::class, 'thread_id');
     }
 
+    public function replies()
+{
+    return $this->hasMany(Reply::class, 'thread_id');
+}
+
  
 }

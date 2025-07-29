@@ -96,6 +96,16 @@ public function exportPDF()
 }
 public function createFromFacture(Facture $facture)
 {
-    return view('avoirs.create', compact('facture'));
+    $factures = Facture::with('client')->get();
+return view('avoirs.create', compact('facture', 'factures'));
+}
+
+public function export_PDF(Avoir $avoir)
+{
+    $avoir->load('facture.client', 'facture.items');
+    $company = auth()->user()->company; // ou autre logique selon ton projet
+
+    $pdf = \PDF::loadView('avoirs.single_pdf', compact('avoir', 'company'));
+    return $pdf->download("avoir_{$avoir->id}.pdf");
 }
 }

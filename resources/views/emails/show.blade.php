@@ -1,6 +1,8 @@
+{{-- --}}
+{{-- --}}
+
 @extends('layout')
 
-@php use Illuminate\Support\Facades\Storage; @endphp
 
 @section('content')
 <div class="flex h-screen bg-gray-50">
@@ -70,7 +72,19 @@
                                 <div>
                                     <div class="font-medium text-sm text-gray-800">{{ $email->file_name ?? basename($email->file_path) }}</div>
                                     <div class="text-xs text-gray-500">
-                                      {{ strtoupper(pathinfo($email->file_path, PATHINFO_EXTENSION)) }} • {{ number_format(Storage::size($email->file_path) / 1024, 2) }} KB
+@if ($email->file_path && Storage::disk('local')->exists($email->file_path))
+    <div class="flex items-center space-x-2">
+        <i class="fas fa-file-pdf text-xl"></i>
+        <div>
+            <div class="font-medium text-sm text-gray-700">
+                {{ strtoupper(pathinfo($email->file_path, PATHINFO_EXTENSION)) }}
+            </div>
+            <div class="text-xs text-gray-500">
+                <a href="{{ Storage::url($email->file_path) }}" target="_blank" class="text-blue-500 underline">Download attachment</a>
+            </div>
+        </div>
+    </div>
+@endif
                                     </div>
                                 </div>
                             </a>
@@ -131,21 +145,21 @@
                                 {!! $reply->content !!}
                             </div>
 
-                            @if($reply->file_path)
-                            <div class="mt-4">
-                                <h4 class="text-xs font-medium text-gray-700 mb-1">Pièces jointes</h4>
-                                <div class="flex flex-wrap gap-2">
-                                    <a href="{{ Storage::url($reply->file_path) }}" target="_blank" class="flex items-center px-2 py-1 bg-gray-50 rounded border border-gray-200 hover:bg-gray-100 transition">
-                                        <div class="mr-2 text-blue-500">
-                                            <i class="fas fa-file text-sm"></i>
-                                        </div>
-                                        <div class="text-xs font-medium text-gray-700 truncate max-w-xs">
-                                            {{ $reply->file_name }} • {{ strtoupper(pathinfo($reply->file_path, PATHINFO_EXTENSION)) }} • {{ number_format(Storage::size($reply->file_path) / 1024, 2) }} KB
-                                        </div>
-                                    </a>
-                                </div>
+                      
+
+                            @if ($reply->file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($reply->file_path))
+                            <div class="flex items-center space-x-2 mt-2">
+                                <a href="{{ \Illuminate\Support\Facades\Storage::url($reply->file_path) }}" 
+                                   target="_blank" 
+                                   class="flex items-center space-x-2 text-blue-600 hover:underline">
+                                    <i class="fas fa-file text-sm"></i>
+                                    <span class="text-xs font-medium">{{ $reply->file_name }}</span>
+                                    <span class="text-gray-400 text-xs">
+                                        {{ number_format(\Illuminate\Support\Facades\Storage::disk('public')->size($reply->file_path) / 1024, 2) }} KB
+                                    </span>
+                                </a>
                             </div>
-                            @endif
+                        @endif
                         </div>
                     </div>
                     @endforeach

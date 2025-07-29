@@ -72,7 +72,7 @@
     </div>
 
   <!-- Quick Actions - Modified with functional links -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
     <!-- Modifier Dossier Button -->
     <a href="{{ route('clients.edit', $client->id) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg flex flex-col items-center justify-center transition-all hover:shadow-lg">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,16 +97,7 @@
         <span class="text-sm">Faire chiffrage</span>
     </a>
     
-    <!-- Clôturer Dossier Button -->
-    <form class="contents">
-        @csrf
-        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg flex flex-col items-center justify-center transition-all hover:shadow-lg w-full h-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span class="text-sm">Clôturer dossier</span>
-        </button>
-    </form>
+
 </div>
 
     <!-- Main Grid -->

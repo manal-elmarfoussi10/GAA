@@ -90,7 +90,7 @@ Route::get('conversations/download/{reply}', [\App\Http\Controllers\Conversation
     Route::get('conversations/{reply}/download', [ConversationController::class, 'download'])
      ->name('conversations.download');
      Route::resource('clients', ClientController::class);
-
+     Route::get('/avoirs/{avoir}/pdf', [AvoirController::class, 'export_PDF'])->name('avoirs.pdf');
 
     Route::get('/calendar', [RdvController::class, 'calendar'])->name('rdv.calendar');
     Route::get('/calendar/events', [RdvController::class, 'events'])->name('rdv.events');

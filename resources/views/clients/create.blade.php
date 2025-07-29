@@ -112,6 +112,7 @@
                         <label class="block text-gray-700 mb-2 font-medium">Assurance</label>
                         <select name="nom_assurance" class="form-select w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
                             <option value="">Choisir l'assurance</option>
+                            <option value="autre">Autre</option>
                             <option value="AXA">AXA</option>
                             <option value="Allianz">Allianz</option>
                             <option value="Groupama">Groupama</option>
@@ -203,6 +204,7 @@
                             <option value="Vitre de toit ouvrant">Vitre de toit ouvrant</option>
                             <option value="Vitre de hayon">Vitre de hayon</option>
                             <option value="Vitre de portière">Vitre de portière</option>
+                            <option value="autre">Autre</option>
                         </select>
                     </div>
                     

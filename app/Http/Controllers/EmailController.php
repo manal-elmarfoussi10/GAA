@@ -13,11 +13,14 @@ class EmailController extends Controller
 {
     public function inbox()
     {
-        $emails = Email::with(['senderUser', 'receiverUser'])
+        $emails = Email::with(['senderUser', 'receiverUser', 'replies.senderUser'])
             ->where('receiver_id', Auth::id())
+            ->orWhereHas('replies', function ($query) {
+                $query->where('receiver_id', Auth::id());
+            })
             ->latest()
             ->paginate(10);
-    
+
         return view('emails.inbox', compact('emails'));
     }
     
@@ -82,9 +85,21 @@ class EmailController extends Controller
         $email = Email::with([
             'senderUser',
             'receiverUser',
-            'replies.senderUser',   // ← load each reply’s sender
+            'replies.senderUser'
         ])->findOrFail($id);
-    
+
+        if (!$email->is_read && $email->receiver_id == Auth::id()) {
+            $email->is_read = true;
+            $email->save();
+        }
+
+        foreach ($email->replies as $reply) {
+            if (!$reply->is_read && $reply->receiver_id == Auth::id()) {
+                $reply->is_read = true;
+                $reply->save();
+            }
+        }
+
         return view('emails.show', compact('email'));
     }
 
@@ -175,6 +190,9 @@ class EmailController extends Controller
             'file_path'  => null,
             'file_name'  => null,
         ]);
+
+        // Set receiver_id before saving
+        $reply->receiver_id = $email->receiver_id;
 
         // Handle file upload if present
         if ($request->hasFile('file')) {

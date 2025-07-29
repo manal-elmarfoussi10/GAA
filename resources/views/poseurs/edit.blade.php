@@ -89,7 +89,8 @@
                         <div class="flex items-center">
                             <div class="relative flex items-start">
                                 <div class="flex items-center h-5">
-                                    <input type="checkbox" name="actif" id="actif" class="focus:ring-orange-500 h-4 w-4 text-orange-600 border-gray-300 rounded" {{ old('actif', $poseur->actif) ? 'checked' : '' }}>
+                                    <input type="hidden" name="actif" value="0">
+                                    <input type="checkbox" name="actif" id="actif" value="1" class="focus:ring-orange-500 h-4 w-4 text-orange-600 border-gray-300 rounded" {{ old('actif', $poseur->actif) ? 'checked' : '' }}>
                                 </div>
                                 <div class="ml-3 text-sm">
                                     <label for="actif" class="font-medium text-gray-700">Poseur actif</label>
